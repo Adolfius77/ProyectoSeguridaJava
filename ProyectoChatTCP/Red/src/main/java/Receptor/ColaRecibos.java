@@ -1,27 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Receptor;
 
 import ObserverReceptor.ObservableRecibos;
 import ObserverReceptor.ObservadorRecibos;
 import com.google.gson.Gson;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 import org.itson.paquetedto.PaqueteDTO;
 
-/**
- *
- * @author Jck Murrieta
- */
 public class ColaRecibos implements ObservableRecibos {
-
     private Queue<String> cola = new LinkedList<>();
-    private Gson serializador = new Gson();
-    private ObservableRecibos observadorRecibos;
+    private Gson gson = new Gson();
     private List<ObservadorRecibos> observadores = new ArrayList<>();
 
     @Override
@@ -31,24 +21,19 @@ public class ColaRecibos implements ObservableRecibos {
 
     @Override
     public void notificar() {
-        for (ObservadorRecibos ob : observadores) {
-            System.out.println("[ColaRecibos] aver ya basta: " + ob.toString());
-            ob.actualizar();
-        }
+        for (ObservadorRecibos ob : observadores) ob.actualizar();
     }
 
-    public void queue(String paquete) {
-        cola.add(paquete);
+    public synchronized void queue(String json) {
+        cola.add(json);
         notificar();
-        System.out.println("[ColaRecibos] agregado: " + paquete);
     }
 
-    public PaqueteDTO<?> dequeue() {
-        String paquete = cola.poll();
-        return deserializar(paquete);
-    }
-
-    public PaqueteDTO<?> deserializar(String paquete) {
-        return serializador.fromJson(paquete, PaqueteDTO.class);
+    public synchronized PaqueteDTO dequeue() {
+        String json = cola.poll();
+        if (json == null) return null;
+        try {
+            return gson.fromJson(json, PaqueteDTO.class);
+        } catch (Exception e) { return null; }
     }
 }

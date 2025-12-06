@@ -6,129 +6,86 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.net.Socket;
 import java.security.PublicKey;
-import java.util.Base64;
 
-/**
- * Cliente TCP con soporte de cifrado híbrido RSA + AES-GCM
- *
- * @author Jck Murrieta
- */
 public class ClienteTCP implements ObservadorEnvios {
 
     private ColaEnvios cola;
-    private int puerto;
-    private String host;
+    // Valores por defecto si no vienen en el paquete
+    private int puertoDefault; 
+    private String hostDefault;
+    
     private GestorSeguridad gestorSeguridad;
-    private boolean cifradoHabilitado;
+    private boolean cifradoHabilitado = false;
 
-    @Override
-    public void actualizar() {
-        try {
-            String paqueteSerializado = cola.dequeue();
-
-            if (paqueteSerializado == null) {
-                return;
-            }
-
-            JsonObject obj = JsonParser.parseString(paqueteSerializado).getAsJsonObject();
-
-            String hostDestino = obj.get("host").getAsString();
-            int puertoDestino = obj.get("puertoDestino").getAsInt();
-            System.out.println("[ClienteTCP] paquete: " + obj.toString() + " " + hostDestino + puertoDestino);
-            enviarPaquete(obj.toString(), hostDestino, puertoDestino);
-
-        } catch (Exception e) {
-            System.err.println("Error en ClienteTCP.actualizar(): " + e.getMessage());
-        }
-    }
-
-    public ClienteTCP(ColaEnvios cola, int puerto, String host) {
+    public ClienteTCP(ColaEnvios cola, int puertoDefault, String hostDefault) {
         this.cola = cola;
-        this.puerto = puerto;
-        this.host = host;
-        this.cifradoHabilitado = false;
-
+        this.puertoDefault = puertoDefault;
+        this.hostDefault = hostDefault;
         try {
             this.gestorSeguridad = new GestorSeguridad();
             this.cifradoHabilitado = true;
-            System.out.println("[ClienteTCP] Cifrado habilitado con RSA + AES-GCM");
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    public void setCifradoHabilitado(boolean b) { this.cifradoHabilitado = b; }
+
+    @Override
+    public void actualizar() {
+        // Desencolar mensaje (JSON String)
+        String json = cola.dequeue(); 
+        if (json == null) return;
+
+        try {
+            // Analizar JSON para ver si trae destino específico
+            JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
+            
+            // Usar destino del paquete, o el default si no trae
+            String host = obj.has("host") ? obj.get("host").getAsString() : hostDefault;
+            int puerto = obj.has("puertoDestino") && obj.get("puertoDestino").getAsInt() > 0 
+                         ? obj.get("puertoDestino").getAsInt() : puertoDefault;
+
+            enviar(json, host, puerto);
         } catch (Exception e) {
-            System.err.println("[ClienteTCP] No se pudo inicializar el cifrado: " + e.getMessage());
-            this.cifradoHabilitado = false;
+            System.err.println("[ClienteTCP] Error procesando envío: " + e.getMessage());
         }
     }
 
-    /**
-     * Habilita o deshabilita el cifrado de mensajes
-     */
-    public void setCifradoHabilitado(boolean habilitado) {
-        this.cifradoHabilitado = habilitado && gestorSeguridad != null;
-    }
-
-    /**
-     * Obtiene la llave pública de este cliente
-     */
-    public byte[] obtenerLlavePublica() {
-        if (gestorSeguridad != null) {
-            return gestorSeguridad.obtenerPublicaBytes();
-        }
-        return null;
-    }
-
-    public void enviarPaquete(String paquete, String host, int puerto) {
+    private void enviar(String mensaje, String host, int puerto) {
         try (Socket socket = new Socket(host, puerto);
              DataOutputStream out = new DataOutputStream(socket.getOutputStream());
              DataInputStream in = new DataInputStream(socket.getInputStream())) {
 
-            if (cifradoHabilitado && gestorSeguridad != null) {
-                // 1. Intercambio de llaves: recibir llave pública del servidor
-                int tamanoLlave = in.readInt();
-                byte[] llavePublicaServidor = new byte[tamanoLlave];
-                in.readFully(llavePublicaServidor);
+            if (cifradoHabilitado) {
+                // PASO 1: Recibir llave pública del Servidor
+                int lenServerKey = in.readInt();
+                byte[] serverKeyBytes = new byte[lenServerKey];
+                in.readFully(serverKeyBytes);
+                PublicKey llaveServidor = gestorSeguridad.importarPublica(serverKeyBytes);
 
-                PublicKey llaveServidor = gestorSeguridad.importarPublica(llavePublicaServidor);
-
-                if (llaveServidor == null) {
-                    System.err.println("[ClienteTCP] Error: No se pudo importar la llave pública del servidor");
-                    // Enviar sin cifrar como fallback
-                    enviarSinCifrar(out, paquete);
-                    return;
-                }
-
-                // 2. Enviar nuestra llave pública
-                byte[] nuestraLlave = gestorSeguridad.obtenerPublicaBytes();
-                out.writeInt(nuestraLlave.length);
-                out.write(nuestraLlave);
+                // PASO 2: Enviar mi llave pública
+                byte[] miKey = gestorSeguridad.obtenerPublicaBytes();
+                out.writeInt(miKey.length);
+                out.write(miKey);
                 out.flush();
 
-                // 3. Cifrar y enviar el mensaje
-                byte[] mensajeCifrado = gestorSeguridad.cifrar(paquete, llaveServidor);
-                out.writeInt(mensajeCifrado.length);
-                out.write(mensajeCifrado);
+                // PASO 3: Cifrar mensaje con llave del servidor
+                byte[] cifrado = gestorSeguridad.cifrar(mensaje, llaveServidor);
+                out.writeInt(cifrado.length);
+                out.write(cifrado);
                 out.flush();
-
-                System.out.println("[ClienteTCP] Paquete enviado cifrado a " + host + ":" + puerto);
+                
+                System.out.println("[ClienteTCP] Enviado cifrado a " + host + ":" + puerto);
             } else {
-                // Enviar sin cifrado
-                enviarSinCifrar(out, paquete);
+                byte[] b = mensaje.getBytes();
+                out.writeInt(0);
+                out.writeInt(b.length);
+                out.write(b);
+                out.flush();
             }
-
-        } catch (IOException e) {
-            System.err.println("[ClienteTCP] Error enviando paquete por TCP: " + e.getMessage());
         } catch (Exception e) {
-            System.err.println("[ClienteTCP] Error cifrando paquete: " + e.getMessage());
+            System.err.println("[ClienteTCP] Error enviando: " + e.getMessage());
         }
-    }
-
-    private void enviarSinCifrar(DataOutputStream out, String paquete) throws IOException {
-        byte[] datos = paquete.getBytes();
-        out.writeInt(0); // Indicador de que NO está cifrado
-        out.writeInt(datos.length);
-        out.write(datos);
-        out.flush();
-        System.out.println("[ClienteTCP] Paquete enviado SIN cifrar");
     }
 }

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Receptor;
 
 import Cifrado.GestorSeguridad;
@@ -12,118 +8,87 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.PublicKey;
 
-/**
- * Servidor TCP con soporte de cifrado híbrido RSA + AES-GCM
- *
- * @author Jck Murrieta
- */
 public class ServidorTCP {
 
     private ColaRecibos cola;
     private int puerto;
     private ServerSocket socket;
     private GestorSeguridad gestorSeguridad;
-    private boolean cifradoHabilitado;
+    private boolean cifradoHabilitado = false;
 
     public ServidorTCP(ColaRecibos cola, int puerto) {
         this.cola = cola;
         this.puerto = puerto;
-        this.cifradoHabilitado = false;
-
         try {
             this.gestorSeguridad = new GestorSeguridad();
             this.cifradoHabilitado = true;
-            System.out.println("[ServidorTCP] Cifrado habilitado con RSA + AES-GCM");
         } catch (Exception e) {
-            System.err.println("[ServidorTCP] No se pudo inicializar el cifrado: " + e.getMessage());
-            this.cifradoHabilitado = false;
+            e.printStackTrace();
         }
     }
 
-    /**
-     * Habilita o deshabilita el cifrado de mensajes
-     */
     public void setCifradoHabilitado(boolean habilitado) {
-        this.cifradoHabilitado = habilitado && gestorSeguridad != null;
+        this.cifradoHabilitado = habilitado;
     }
 
     public void iniciar() {
         try {
             socket = new ServerSocket(puerto);
-            System.out.println("Servidor TCP iniciado en puerto: " + puerto);
+            // Si el puerto era 0, actualizamos con el asignado real
+            if (this.puerto == 0) this.puerto = socket.getLocalPort();
+            
+            System.out.println("[ServidorTCP] Escuchando en puerto: " + this.puerto);
 
-            Thread hiloServidor = new Thread(() -> {
-                while (!socket.isClosed()) {
-                    try {
-                        Socket cliente = socket.accept();
-                        recibirPaquete(cliente);
-                    } catch (IOException e) {
-                        System.err.println("Error aceptando cliente: " + e.getMessage());
-                    }
-                }
-            });
-
-            hiloServidor.start();
-
+            while (!socket.isClosed()) {
+                Socket cliente = socket.accept();
+                // Procesar cada cliente en un hilo nuevo para no bloquear
+                new Thread(() -> manejarCliente(cliente)).start();
+            }
         } catch (IOException e) {
-            System.err.println("No se pudo iniciar el servidor TCP: " + e.getMessage());
+            System.err.println("[ServidorTCP] Error: " + e.getMessage());
         }
     }
 
-    public void recibirPaquete(Socket cliente) {
+    private void manejarCliente(Socket cliente) {
         try (DataInputStream in = new DataInputStream(cliente.getInputStream());
              DataOutputStream out = new DataOutputStream(cliente.getOutputStream())) {
 
-            if (cifradoHabilitado && gestorSeguridad != null) {
-                // 1. Enviar nuestra llave pública al cliente
-                byte[] nuestraLlave = gestorSeguridad.obtenerPublicaBytes();
-                out.writeInt(nuestraLlave.length);
-                out.write(nuestraLlave);
+            if (cifradoHabilitado) {
+                // PASO 1: Enviar mi llave pública
+                byte[] miLlave = gestorSeguridad.obtenerPublicaBytes();
+                out.writeInt(miLlave.length);
+                out.write(miLlave);
                 out.flush();
 
-                // 2. Recibir llave pública del cliente
-                int tamanoLlave = in.readInt();
-                byte[] llavePublicaCliente = new byte[tamanoLlave];
-                in.readFully(llavePublicaCliente);
+                // PASO 2: Recibir llave pública del cliente
+                int lenLlave = in.readInt();
+                byte[] llaveClienteBytes = new byte[lenLlave];
+                in.readFully(llaveClienteBytes);
+                // (Opcional: guardar llaveCliente si necesitamos responder en la misma sesión)
 
-                PublicKey llaveCliente = gestorSeguridad.importarPublica(llavePublicaCliente);
+                // PASO 3: Recibir Mensaje Cifrado
+                int lenMsj = in.readInt();
+                byte[] msjCifrado = new byte[lenMsj];
+                in.readFully(msjCifrado);
 
-                // 3. Recibir mensaje cifrado
-                int tamanoMensaje = in.readInt();
-                byte[] mensajeCifrado = new byte[tamanoMensaje];
-                in.readFully(mensajeCifrado);
-
-                // 4. Descifrar mensaje
-                String mensajeDescifrado = gestorSeguridad.descifrar(mensajeCifrado);
-
-                if (mensajeDescifrado != null) {
-                    cola.queue(mensajeDescifrado);
-                    System.out.println("[ServidorTCP] Paquete CIFRADO recibido y descifrado correctamente");
-                } else {
-                    System.err.println("[ServidorTCP] Error: No se pudo descifrar el mensaje");
+                // PASO 4: Descifrar
+                String json = gestorSeguridad.descifrar(msjCifrado);
+                if (json != null) {
+                    System.out.println("[ServidorTCP] Mensaje recibido seguro.");
+                    cola.queue(json);
                 }
             } else {
-                // Recibir sin cifrado
-                int indicadorCifrado = in.readInt();
-                int tamano = in.readInt();
-                byte[] datos = new byte[tamano];
-                in.readFully(datos);
-
-                String recibido = new String(datos);
-                cola.queue(recibido);
-                System.out.println("[ServidorTCP] Paquete SIN CIFRAR recibido: " + recibido);
+                // Modo texto plano (Legacy/Debug)
+                int check = in.readInt(); // Ignorar indicador
+                int len = in.readInt();
+                byte[] data = new byte[len];
+                in.readFully(data);
+                cola.queue(new String(data));
             }
-
-        } catch (IOException e) {
-            System.err.println("[ServidorTCP] Error recibiendo paquete: " + e.getMessage());
         } catch (Exception e) {
-            System.err.println("[ServidorTCP] Error descifrando paquete: " + e.getMessage());
+            System.err.println("[ServidorTCP] Error conexión: " + e.getMessage());
         } finally {
-            try {
-                cliente.close();
-            } catch (IOException e) {
-                System.err.println("[ServidorTCP] No se pudo cerrar el socket cliente");
-            }
+            try { cliente.close(); } catch (Exception e) {}
         }
     }
 }
