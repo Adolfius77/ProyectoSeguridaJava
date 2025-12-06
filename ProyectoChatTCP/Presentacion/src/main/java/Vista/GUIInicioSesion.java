@@ -4,17 +4,86 @@
  */
 package Vista;
 
+import Controlador.Controlador;
+import Controlador.IControlador;
+import Modelo.Modelo;
+import ObjetoPresentacion.UsuarioOP;
+import Observador.INotificadorNuevoMensaje;
+import java.awt.Cursor;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author garfi
  */
-public class GUIInicioSesion extends javax.swing.JFrame {
+public class GUIInicioSesion extends javax.swing.JFrame implements INotificadorNuevoMensaje {
+
+    private IControlador control;
+    private Modelo modelo;
 
     /**
      * Creates new form GUIInicioSesion
      */
     public GUIInicioSesion() {
         initComponents();
+        setLocationRelativeTo(null);
+        configurarLogica();
+        configurarEventosAdicionales();
+    }
+
+    private void configurarLogica() {
+
+        this.modelo = new Modelo();
+        this.control = new Controlador(modelo);
+        this.modelo.agregarObservador(this);
+
+        Validaciones.setOwner(this);
+    }
+
+    private void configurarEventosAdicionales() {
+
+        lblEnlaceRegistro.setCursor(new Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblEnlaceRegistro.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                abrirVentanaRegistro();
+            }
+        });
+    }
+
+    @Override
+    public void actualizar(UsuarioOP usuarioOP) {
+
+        SwingUtilities.invokeLater(() -> {
+            
+            btnInicioSesion.setEnabled(true);
+            btnInicioSesion.setText("Iniciar Sesion");
+
+            String tipoEvento = usuarioOP.getNombre();
+            String contenido = usuarioOP.getUltimoMensaje();
+
+            if ("LOGIN_OK".equals(tipoEvento)) {
+                JOptionPane.showMessageDialog(this, "Bienvenido " + contenido);
+                abrirChatIndividual();
+            } else if ("ERROR".equals(tipoEvento)) {
+                JOptionPane.showMessageDialog(this, contenido, "Error de Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+
+    private void abrirChatIndividual() {
+        GUIChatIndividual chat = new GUIChatIndividual();
+        chat.setVisible(true);
+        this.dispose();
+    }
+
+    private void abrirVentanaRegistro() {
+        GUIRegistro registro = new GUIRegistro();
+        registro.setVisible(true);
+        this.dispose();
     }
 
     /**
@@ -29,11 +98,11 @@ public class GUIInicioSesion extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtContraseña = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtUsuario = new javax.swing.JTextField();
         btnInicioSesion = new javax.swing.JButton();
         lblEnlaceRegistro = new javax.swing.JLabel();
+        txtContraseña = new javax.swing.JPasswordField();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -44,12 +113,6 @@ public class GUIInicioSesion extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Contraseña:");
-
-        txtContraseña.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtContraseñaActionPerformed(evt);
-            }
-        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Usuario:");
@@ -73,20 +136,19 @@ public class GUIInicioSesion extends javax.swing.JFrame {
         lblEnlaceRegistro.setForeground(new java.awt.Color(51, 51, 255));
         lblEnlaceRegistro.setText("¿No tienes cuenta? Registrate");
 
+        txtContraseña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtContraseñaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(125, 125, 125)
-                .addComponent(lblEnlaceRegistro)
-                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(61, Short.MAX_VALUE)
+                .addContainerGap(140, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(txtContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(51, 51, 51))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(btnInicioSesion)
                         .addGap(149, 149, 149))
@@ -96,6 +158,15 @@ public class GUIInicioSesion extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(166, 166, 166))))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(125, 125, 125)
+                        .addComponent(lblEnlaceRegistro))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(62, 62, 62)
+                        .addComponent(txtContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                     .addContainerGap(62, Short.MAX_VALUE)
@@ -165,17 +236,33 @@ public class GUIInicioSesion extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContraseñaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtContraseñaActionPerformed
-
     private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUsuarioActionPerformed
 
     private void btnInicioSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioSesionActionPerformed
-        // TODO add your handling code here:
+        String usuario = txtUsuario.getText();
+        String password = txtContraseña.getText();
+        
+        if (Validaciones.esTextoVacio(usuario)) {
+            return; 
+        }
+
+        if (!Validaciones.esNombreUsuarioValido(usuario)) {
+            return;
+        }
+
+        if (!Validaciones.esContrasenaValida(password)) {
+            return;
+        }
+        btnInicioSesion.setEnabled(false);
+        System.out.println("[GUIInicioSesion] Enviando solicitud de login para: " + usuario);
+        control.iniciarSesion(usuario, password);        
     }//GEN-LAST:event_btnInicioSesionActionPerformed
+
+    private void txtContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContraseñaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtContraseñaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -220,7 +307,8 @@ public class GUIInicioSesion extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblEnlaceRegistro;
-    private javax.swing.JTextField txtContraseña;
+    private javax.swing.JPasswordField txtContraseña;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
+
 }

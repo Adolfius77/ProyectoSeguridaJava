@@ -4,17 +4,86 @@
  */
 package Vista;
 
+import Controlador.Controlador;
+import Controlador.IControlador;
+import Modelo.Modelo;
+import ObjetoPresentacion.UsuarioOP;
+import Observador.INotificadorNuevoMensaje;
+import java.awt.Cursor;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author garfi
  */
-public class GUIRegistro extends javax.swing.JFrame {
+public class GUIRegistro extends javax.swing.JFrame implements INotificadorNuevoMensaje {
+
+    private IControlador control;
+    private Modelo modelo;
 
     /**
      * Creates new form GUIRegistro
      */
     public GUIRegistro() {
         initComponents();
+        setLocationRelativeTo(null);
+        configurarLogica();
+        configurarEventosAdicionales();
+    }
+
+    private void configurarLogica() {
+
+        this.modelo = new Modelo();
+        this.control = new Controlador(modelo);
+        this.modelo.agregarObservador(this);
+
+        Validaciones.setOwner(this);
+    }
+
+    private void configurarEventosAdicionales() {
+        lblEnlaceInicioSesion.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        lblEnlaceInicioSesion.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                abrirVentanaLogin();
+            }
+        });
+    }
+
+    @Override
+    public void actualizar(UsuarioOP usuarioOP) {
+        SwingUtilities.invokeLater(() -> {
+            btnRegistro.setEnabled(true);
+            btnRegistro.setText("Registrarse");
+            
+            String tipoEvento = usuarioOP.getNombre();
+            String mensajeServidor = usuarioOP.getUltimoMensaje();
+
+            if ("REGISTRO_OK".equals(tipoEvento)) {
+                JOptionPane.showMessageDialog(this,
+                        "Registro exitoso.",
+                        "Éxito",
+                        JOptionPane.INFORMATION_MESSAGE);
+                abrirVentanaLogin();
+
+            } else if ("ERROR".equals(tipoEvento)) {
+                if (Validaciones.esUsuarioDuplicado(mensajeServidor, txtUsuario.getText())) {
+                    txtUsuario.selectAll();
+                    txtUsuario.requestFocus();
+                } else {
+                    Validaciones.mostrarError(mensajeServidor);
+                }
+            }
+        });
+    }
+
+    private void abrirVentanaLogin() {
+        GUIInicioSesion login = new GUIInicioSesion();
+        login.setVisible(true);
+        this.dispose();
     }
 
     /**
@@ -29,13 +98,13 @@ public class GUIRegistro extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtContraseña = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtUsuario = new javax.swing.JTextField();
         btnRegistro = new javax.swing.JButton();
         lblEnlaceInicioSesion = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        txtContraseña1 = new javax.swing.JTextField();
+        txtContraseña = new javax.swing.JPasswordField();
+        txtContraseña1 = new javax.swing.JPasswordField();
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -46,12 +115,6 @@ public class GUIRegistro extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Contraseña:");
-
-        txtContraseña.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtContraseñaActionPerformed(evt);
-            }
-        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel2.setText("Usuario:");
@@ -78,12 +141,6 @@ public class GUIRegistro extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setText("Confirmar Contraseña:");
 
-        txtContraseña1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtContraseña1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -97,24 +154,29 @@ public class GUIRegistro extends javax.swing.JFrame {
                         .addGap(107, 107, 107)
                         .addComponent(lblEnlaceInicioSesion)))
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(60, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(txtContraseña, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addGap(99, 99, 99))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addGap(115, 115, 115)))
-                    .addComponent(txtContraseña1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(52, 52, 52))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(108, 108, 108)
                 .addComponent(jLabel3)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(60, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtContraseña1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGap(95, 95, 95)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addGap(151, 151, 151))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addGap(167, 167, 167))))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(txtContraseña)
+                                .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(52, 52, 52)))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -129,9 +191,9 @@ public class GUIRegistro extends javax.swing.JFrame {
                 .addComponent(txtContraseña, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtContraseña1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(btnRegistro)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblEnlaceInicioSesion)
@@ -180,21 +242,33 @@ public class GUIRegistro extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContraseñaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtContraseñaActionPerformed
-
     private void txtUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsuarioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtUsuarioActionPerformed
 
     private void btnRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnRegistroActionPerformed
+        String usuario = txtUsuario.getText();
+        String pass1 = txtContraseña.getText();
+        String pass2 = txtContraseña1.getText();
 
-    private void txtContraseña1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContraseña1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtContraseña1ActionPerformed
+        if (Validaciones.esTextoVacio(usuario)) {
+            return;
+        }
+
+        if (!Validaciones.esNombreUsuarioValido(usuario)) {
+            return;
+        }
+
+        if (!Validaciones.esContrasenaValida(pass1)) {
+            return;
+        }
+        
+        if (!Validaciones.sonContrasenasIguales(pass1, pass2)) return;
+
+        btnRegistro.setEnabled(false);
+        System.out.println("[GUIRegistro] Solicitando registro para: " + usuario);
+        control.registrarUsuario(usuario, pass1);
+    }//GEN-LAST:event_btnRegistroActionPerformed
 
     /**
      * @param args the command line arguments
@@ -240,8 +314,8 @@ public class GUIRegistro extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel lblEnlaceInicioSesion;
-    private javax.swing.JTextField txtContraseña;
-    private javax.swing.JTextField txtContraseña1;
+    private javax.swing.JPasswordField txtContraseña;
+    private javax.swing.JPasswordField txtContraseña1;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }
