@@ -11,7 +11,7 @@ public class Controlador implements IControlador {
     public Controlador(IModeloEscritura modelo) {
         this.modelo = modelo;
     }
-    
+
     // Constructor por defecto si lo usas así en las vistas
     public Controlador() {
         this.modelo = new Modelo();
@@ -41,4 +41,10 @@ public class Controlador implements IControlador {
     public void abrirChatUsuario(UsuarioOP usuarioOP) {
         // Lógica de navegación
     }
+
+    @Override
+    public void pedirListaUsuarios() {
+        modelo.solicitarUsuarios();
+    }
+    
 }

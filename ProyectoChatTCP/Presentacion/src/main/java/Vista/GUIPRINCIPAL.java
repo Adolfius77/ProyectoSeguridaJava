@@ -20,30 +20,33 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
     
     private Controlador controlador;
     private Modelo modelo;
+    private String usurioLogueado;
     
-    public GUIPRINCIPAL() {
-        modelo = new Modelo();
-        modelo.agregarObservador(this);
+    public GUIPRINCIPAL(String usurioLogueado) {
+        this.usurioLogueado = usurioLogueado;
+        initComponents();
+        
+        this.modelo = new Modelo();
+        this.modelo.agregarObservador(this);
         this.controlador = new Controlador(modelo);
+        
         configurarVentana();
+        controlador.pedirListaUsuarios();
     }
     
-    public GUIPRINCIPAL(Controlador controlador) {
-        this.controlador = controlador;
-        initComponents();
-        configurarVentana();
+    public GUIPRINCIPAL() {
+        this("usuarioprueba");
         
     }
     
     private void configurarVentana(){
         this.setTitle("sistema de chat seguro");
         this.setLocationRelativeTo(null);
-        
         panelDinamico.setLayout(new BoxLayout(panelDinamico,BoxLayout.Y_AXIS));
          
     }
     public void actualizarListaUsuarios(List<String> nombres) {
-        panelDinamico.removeAll(); // Limpiar lista anterior
+        panelDinamico.removeAll(); 
         
         if (nombres.isEmpty()) {
             javax.swing.JLabel lbl = new javax.swing.JLabel("No hay usuarios conectados");
@@ -51,7 +54,12 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
             panelDinamico.add(lbl);
         } else {
             for (String nombre : nombres) {
-                // AQUÍ SE CREA Y AGREGA EL FORM DE USUARIO
+               
+                if (this.usurioLogueado != null && 
+                        nombre.trim().equalsIgnoreCase(this.usurioLogueado.trim())){
+                    continue;
+                }
+              
                 formUsuarios item = new formUsuarios(nombre, controlador);
                 panelDinamico.add(item);
             }

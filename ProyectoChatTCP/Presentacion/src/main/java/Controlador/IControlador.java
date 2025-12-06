@@ -24,5 +24,6 @@ public interface IControlador {
 
     // Mensaje grupal
     void enviarMensajeGrupal(String contenido);
-
+    
+    void pedirListaUsuarios();
 }
