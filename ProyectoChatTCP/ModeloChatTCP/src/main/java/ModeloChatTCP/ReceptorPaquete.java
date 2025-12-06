@@ -1,30 +1,73 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ModeloChatTCP;
 
+import DTO.UsuarioDTO;
+import ModeloChatTCP.LogicaCliente;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.itson.componentereceptor.IReceptor;
 import org.itson.paquetedto.PaqueteDTO;
 
 /**
- *
- * @author Jack Murrieta
+ * Receptor de paquetes que vienen desde el ServidorMain.
+ * Procesa respuestas de login y registro enviadas al cliente.
  */
 public class ReceptorPaquete implements IReceptor {
-    
-    private LogicaChatTCP logicaChat;
-    private LogicaCliente logicaCliente;
 
-    public ReceptorPaquete(LogicaChatTCP logicaChat, LogicaCliente logicaCliente) {
-        this.logicaChat = logicaChat;
+    private LogicaCliente logicaCliente;
+    private Gson gson;
+
+    public ReceptorPaquete(LogicaCliente logicaCliente) {
         this.logicaCliente = logicaCliente;
+        this.gson = new GsonBuilder().create();
     }
-    
 
     @Override
     public void recibirCambio(PaqueteDTO paquete) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String tipo = paquete.getTipoEvento();
+        System.out.println("[ReceptorPaquete] Evento recibido: " + tipo);
+
+        switch (tipo.toUpperCase()) {
+            case "LOGIN_OK":
+                procesarLoginOk(paquete);
+                break;
+            case "LOGIN_ERROR":
+                procesarLoginError(paquete);
+                break;
+            case "REGISTRO_OK":
+                procesarRegistroOk(paquete);
+                break;
+            case "REGISTRO_ERROR":
+                procesarRegistroError(paquete);
+                break;
+            default:
+                System.out.println("[ReceptorPaquete] Evento no reconocido: " + tipo);
+                break;
+        }
     }
 
+    private void procesarLoginOk(PaqueteDTO paquete) {
+        UsuarioDTO usuario = mapContenido(paquete.getContenido(), UsuarioDTO.class);
+        logicaCliente.setUsuarioEnSesion(usuario);
+        System.out.println("[ReceptorPaquete] Login exitoso: " + usuario.getNombreUsuario());
+    }
+
+    private void procesarLoginError(PaqueteDTO paquete) {
+        String mensaje = (String) paquete.getContenido();
+        System.out.println("[ReceptorPaquete] Login fallido: " + mensaje);
+    }
+
+    private void procesarRegistroOk(PaqueteDTO paquete) {
+        String mensaje = (String) paquete.getContenido();
+        System.out.println("[ReceptorPaquete] Registro exitoso: " + mensaje);
+    }
+
+    private void procesarRegistroError(PaqueteDTO paquete) {
+        String mensaje = (String) paquete.getContenido();
+        System.out.println("[ReceptorPaquete] Registro fallido: " + mensaje);
+    }
+
+    private <T> T mapContenido(Object contenido, Class<T> clase) {
+        String json = gson.toJson(contenido);
+        return gson.fromJson(json, clase);
+    }
 }

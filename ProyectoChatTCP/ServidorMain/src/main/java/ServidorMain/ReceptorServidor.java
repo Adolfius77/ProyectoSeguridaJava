@@ -1,35 +1,35 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package ServidorMain;
 
 import DTO.UsuarioDTO;
 import GeneradorColor.GeneradorColor;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.util.Map;
 import org.itson.componentereceptor.IReceptor;
 import org.itson.paquetedto.PaqueteDTO;
 
 /**
- *
+ * Receptor del servidor que procesa solicitudes de login y registro.
+ * Convierte LinkedTreeMap a UsuarioDTO usando Gson para evitar problemas de casting.
+ * 
  * @author Jack Murrieta
  */
 public class ReceptorServidor implements IReceptor {
 
     private ServidorMain servidor;
+    private Gson gson;
 
     public ReceptorServidor(ServidorMain servidor) {
         this.servidor = servidor;
+        this.gson = new GsonBuilder().create();
     }
 
     @Override
     public void recibirCambio(PaqueteDTO paquete) {
-
         String tipo = paquete.getTipoEvento();
         System.out.println("[ServidorMain] Evento recibido: " + tipo);
 
         switch (tipo.toUpperCase()) {
-
             case "SOLICITAR_LOGIN":
                 procesarLogin(paquete);
                 break;
@@ -46,29 +46,22 @@ public class ReceptorServidor implements IReceptor {
 
     // ---------------- LOGIN ----------------
     private void procesarLogin(PaqueteDTO paquete) {
-
         Map<String, Object> data = (Map<String, Object>) paquete.getContenido();
+        UsuarioDTO usuarioReq = mapToUsuarioDTO(data);
 
-        String nombreUsuario = (String) data.get("nombreUsuario");
-        String contrasena = (String) data.get("contrasena");
-        String ip = (String) data.get("ip");
-        int puerto = ((Double) data.get("puerto")).intValue();
-        String color = (String) data.get("color");
-        String publicKey = (String) data.get("publicKey");
-
-        boolean ok = servidor.validarUsuario(nombreUsuario, contrasena);
+        boolean ok = servidor.validarUsuario(usuarioReq.getNombreUsuario(), usuarioReq.getContrasena());
 
         PaqueteDTO resp = new PaqueteDTO();
         resp.setTipoEvento(ok ? "LOGIN_OK" : "LOGIN_ERROR");
 
         if (ok) {
             // Recuperar datos completos del usuario
-            UsuarioDTO usuario = servidor.obtenerUsuario(nombreUsuario);
+            UsuarioDTO usuario = servidor.obtenerUsuario(usuarioReq.getNombreUsuario());
             // Actualizamos IP, puerto, color y publicKey del login actual
-            usuario.setIp(ip);
-            usuario.setPuerto(puerto);
-            usuario.setColor(color);
-            usuario.setPublicKey(publicKey);
+            usuario.setIp(usuarioReq.getIp());
+            usuario.setPuerto(usuarioReq.getPuerto());
+            usuario.setColor(usuarioReq.getColor());
+            usuario.setPublicKey(usuarioReq.getPublicKey());
             // Guardar cambios
             servidor.getRepositorioUsuarios().actualizar(usuario);
 
@@ -77,7 +70,6 @@ public class ReceptorServidor implements IReceptor {
             resp.setContenido("Credenciales incorrectas");
         }
 
-        // Dirección inversa (regresar al cliente)
         resp.setHost(paquete.getHost());
         resp.setPuertoDestino(paquete.getPuertoOrigen());
         servidor.enviarRespuesta(resp);
@@ -85,21 +77,12 @@ public class ReceptorServidor implements IReceptor {
 
     // ---------------- REGISTRO ----------------
     private void procesarRegistro(PaqueteDTO paquete) {
-
         Map<String, Object> data = (Map<String, Object>) paquete.getContenido();
+        UsuarioDTO usuario = mapToUsuarioDTO(data);
 
-        UsuarioDTO usuario = new UsuarioDTO(
-                (String) data.get("nombreUsuario"),
-                (String) data.get("contrasena"),
-                (String) data.get("ip"),
-                ((Double) data.get("puerto")).intValue(),
-                (String) data.get("color"),
-                (String) data.get("publicKey")
-        );
-
+        // Generar color único
         GeneradorColor gen = GeneradorColor.getInstancia();
-        String color = gen.generarColor();
-        usuario.setColor(color);
+        usuario.setColor(gen.generarColor());
 
         boolean ok = servidor.registrarUsuario(usuario);
 
@@ -109,7 +92,14 @@ public class ReceptorServidor implements IReceptor {
 
         resp.setHost(paquete.getHost());
         resp.setPuertoDestino(paquete.getPuertoOrigen());
-
         servidor.enviarRespuesta(resp);
+    }
+
+    /**
+     * Mapper para convertir LinkedTreeMap o Map a UsuarioDTO usando Gson
+     */
+    private UsuarioDTO mapToUsuarioDTO(Map<String, Object> data) {
+        String json = gson.toJson(data);
+        return gson.fromJson(json, UsuarioDTO.class);
     }
 }
