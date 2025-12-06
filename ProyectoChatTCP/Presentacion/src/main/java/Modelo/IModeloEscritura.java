@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package Controlador;
+package Modelo;
 
 import ObjetoPresentacion.UsuarioOP;
 
@@ -10,19 +10,20 @@ import ObjetoPresentacion.UsuarioOP;
  *
  * @author Jck Murrieta
  */
-public interface IControlador {
+public interface IModeloEscritura {
 
     void iniciarSesion(String nombreUsuario, String contrasena);
 
     void registrarUsuario(String nombreUsuario, String contrasena);
 
-    // Menú Users → abrir chat
-    void abrirChatUsuario(UsuarioOP usuarioOP);
+    void enviarMensaje(String mensaje, UsuarioOP destinatario);
 
-    // Mensajes privados
+    void mostrarChatFrame(UsuarioOP usuarioOP);
+    
+    void mostrarChatGrupal();
+
     void enviarMensajePrivado(UsuarioOP usuarioDestino, String contenido);
 
-    // Mensaje grupal
     void enviarMensajeGrupal(String contenido);
 
 }

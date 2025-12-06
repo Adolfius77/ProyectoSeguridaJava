@@ -8,6 +8,6 @@ package Modelo;
  *
  * @author Jck Murrieta
  */
-public interface ModeloLectura {
+public interface IModeloLectura {
     
 }
