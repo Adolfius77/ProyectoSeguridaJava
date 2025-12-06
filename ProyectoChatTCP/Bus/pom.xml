@@ -11,14 +11,10 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>PaqueteDTO</artifactId>
+            <artifactId>Red</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ComponenteReceptor</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>ComponenteEmisor</artifactId>
@@ -26,7 +22,13 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>Red</artifactId>
+            <artifactId>ComponenteReceptor</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>PaqueteDTO</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

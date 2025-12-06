@@ -1,20 +1,16 @@
 package EventBus;
 
+import Datos.RepositorioUsuarios;
 import Servicio.Servicio;
+import com.google.gson.internal.LinkedTreeMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import org.itson.componenteemisor.IEmisor;
-
 import org.itson.paquetedto.PaqueteDTO;
 
-/**
- * Bus que recibe y canaliza mensajes recibidos por servicios.
- *
- * @author Jck Murrieta
- */
 public class EventBus {
 
     private Map<String, List<Servicio>> servicios;
@@ -22,7 +18,6 @@ public class EventBus {
 
     public EventBus() {
         this.servicios = new ConcurrentHashMap<>();
-
     }
 
     public void setEmisor(IEmisor emisor) {
@@ -30,57 +25,87 @@ public class EventBus {
     }
 
     public void publicarEvento(PaqueteDTO paquete) {
+        // Normalizar datos de origen
         Servicio origen = new Servicio(paquete.getPuertoOrigen(), paquete.getHost());
-        normalizarPaquete(paquete, origen);
+        if (paquete.getHost() == null) paquete.setHost(origen.getHost());
+        if (paquete.getPuertoOrigen() == 0) paquete.setPuertoOrigen(origen.getPuerto());
 
-        if (paquete.getTipoEvento().equalsIgnoreCase("INICIAR_CONEXION")) {
-            Servicio nuevoServicio = new Servicio(paquete.getPuertoOrigen(), paquete.getHost());
+        String tipo = paquete.getTipoEvento().toUpperCase();
 
-            List<String> eventos = (List<String>) paquete.getContenido();
-
-            if (eventos != null) {
-                for (String evento : eventos) {
-                    registrarServicio(evento, nuevoServicio);
-                }
-            }
-
-            System.out.println("[EventBus] Servicio registrado: " + nuevoServicio);
+        // --- LÓGICA DE SERVIDOR ---
+        if (tipo.equals("REGISTRO")) {
+            procesarRegistro(paquete);
             return;
+        } else if (tipo.equals("LOGIN")) {
+            procesarLogin(paquete);
+            return;
+        }
+        // --------------------------
+
+        if (tipo.equals("INICIAR_CONEXION")) {
+             // Solo registrar servicio, no reenviar
+             Servicio nuevoServicio = new Servicio(paquete.getPuertoOrigen(), paquete.getHost());
+             registrarServicio("MENSAJE", nuevoServicio); // Suscripción por defecto
+             System.out.println("[EventBus] Cliente conectado: " + nuevoServicio);
+             return;
         }
 
         notificarServicios(paquete);
     }
 
-    public void registrarServicio(String tipoEvento, Servicio servicio) {
-        List<Servicio> lista = servicios.computeIfAbsent(tipoEvento, serviciosSuscritos -> new ArrayList<>());
-        for (Servicio s : lista) {
-            if (s.getHost().equals(servicio.getHost()) && s.getPuerto() == servicio.getPuerto()) {
+    private void procesarRegistro(PaqueteDTO paquete) {
+        LinkedTreeMap data = (LinkedTreeMap) paquete.getContenido();
+        String user = (String) data.get("nombreUsuario");
+        String pass = (String) data.get("contrasena");
 
-                return;
-            }
+        boolean exito = RepositorioUsuarios.registrar(user, pass);
+        enviarRespuesta(paquete, exito ? "REGISTRO_OK" : "ERROR", 
+                        exito ? "Registro exitoso" : "Usuario ya existe");
+    }
+
+    private void procesarLogin(PaqueteDTO paquete) {
+        LinkedTreeMap data = (LinkedTreeMap) paquete.getContenido();
+        String user = (String) data.get("nombreUsuario");
+        String pass = (String) data.get("contrasena");
+
+        if (RepositorioUsuarios.validar(user, pass)) {
+            // Suscribir al usuario a los eventos de chat
+            Servicio s = new Servicio(paquete.getPuertoOrigen(), paquete.getHost());
+            registrarServicio("MENSAJE", s);
+            
+            enviarRespuesta(paquete, "LOGIN_OK", user);
+        } else {
+            enviarRespuesta(paquete, "ERROR", "Credenciales Incorrectas");
+        }
+    }
+
+    private void enviarRespuesta(PaqueteDTO origen, String tipo, Object contenido) {
+        PaqueteDTO resp = new PaqueteDTO();
+        resp.setTipoEvento(tipo);
+        resp.setContenido(contenido);
+        // Invertir destino
+        resp.setHost(origen.getHost());
+        resp.setPuertoDestino(origen.getPuertoOrigen());
+        resp.setPuertoOrigen(5556);
+        
+        emisor.enviarCambio(resp);
+    }
+
+    public void registrarServicio(String tipoEvento, Servicio servicio) {
+        List<Servicio> lista = servicios.computeIfAbsent(tipoEvento, k -> new ArrayList<>());
+        for(Servicio s : lista) {
+            if(s.getHost().equals(servicio.getHost()) && s.getPuerto() == servicio.getPuerto()) return;
         }
         lista.add(servicio);
     }
-
-    public void eliminarServicio(String tipoEvento, Servicio servicio) {
-        List<Servicio> lista = servicios.get(tipoEvento);
-        if (lista != null) {
-            lista.remove(servicio);
-        }
-    }
-
-    //notificar servicios por red
+    
     public void notificarServicios(PaqueteDTO paquete) {
-        //  Obtener suscriptores del tipo de evento del paquete
         List<Servicio> lista = servicios.get(paquete.getTipoEvento());
-
         if (lista != null) {
-
             for (Servicio servicio : lista) {
-                if (Objects.equals(servicio.getHost(), paquete.getHost())
-                        && servicio.getPuerto() == paquete.getPuertoOrigen()) {
-                    continue;
-                }
+                // No enviar al mismo origen
+                if (Objects.equals(servicio.getHost(), paquete.getHost()) && 
+                    servicio.getPuerto() == paquete.getPuertoOrigen()) continue;
 
                 paquete.setHost(servicio.getHost());
                 paquete.setPuertoDestino(servicio.getPuerto());
@@ -88,64 +113,7 @@ public class EventBus {
             }
         }
     }
-
-    public void agregarEvento(String nombreEvento, Servicio servicio) {
-        List<Servicio> lista = servicios.get(nombreEvento);
-        if (lista == null) {
-            lista = new ArrayList<>();
-            servicios.put(nombreEvento, lista);
-        }
-        for (Servicio s : lista) {
-            boolean mismoHost = s.getHost().equals(servicio.getHost());
-            boolean mismoPuerto = s.getPuerto() == servicio.getPuerto();
-
-            if (mismoHost && mismoPuerto) {
-                System.out.println("[EventBus] Servicio ya registrado para este evento.");
-                return;
-            }
-        }
-        lista.add(servicio);
-    }
-
-    private void normalizarPaquete(PaqueteDTO paquete, Servicio origen) {
-
-        // Si el host viene vacío o null, se lo ponemos
-        if (paquete.getHost() == null || paquete.getHost().isEmpty()) {
-            paquete.setHost(origen.getHost());
-        }
-
-        // Si el puertoOrigen viene en 0, se lo ponemos
-        if (paquete.getPuertoOrigen() == 0) {
-            paquete.setPuertoOrigen(origen.getPuerto());
-        }
-    }
-
-    //obtener el host de la partida
-    public Servicio obtenerHostPartida() {
-        //el host es el unico suscriptor a este evento
-        List<Servicio> lista = servicios.get("SOLICITAR_UNIRSE");
-        if (lista == null || lista.isEmpty()) {
-            return null;
-        }
-        return lista.get(0);
-    }
-
-    public void enviarHost(PaqueteDTO paquete) {
-        Servicio host = obtenerHostPartida();
-
-        PaqueteDTO respuesta = new PaqueteDTO();
-        respuesta.setTipoEvento("RESPUESTA_HOST");
-
-        respuesta.setHost(paquete.getHost()); // ip del solicitante
-
-        respuesta.setPuertoDestino(paquete.getPuertoOrigen()); // el solicitante va a recibir la respuesta
-
-        respuesta.setPuertoOrigen(host != null ? host.getPuerto() : 0);
-
-        respuesta.setContenido(host);
-
-        emisor.enviarCambio(respuesta);
-
-    }
-
+    
+    // Método necesario para compilación si lo usas en PublicadorEventos
+    public void enviarHost(PaqueteDTO p) {} 
 }
