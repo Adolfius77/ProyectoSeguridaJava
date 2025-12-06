@@ -1,7 +1,8 @@
 package Emisor;
 
 import Cifrado.GestorSeguridad;
-import ObserverEmisor.ObservadorEnvios;
+import ObserverReceptor.ObservadorEnvios;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.DataInputStream;
