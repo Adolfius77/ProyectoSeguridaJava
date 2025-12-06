@@ -6,11 +6,14 @@ import DTO.MensajeDTO;
 import ObjetoPresentacion.UsuarioOP;
 import Observador.INotificadorNuevoMensaje;
 import Observador.IPublicadorNuevoMensaje;
+import com.google.gson.Gson;
 import ensamblador.EnsambladorRed;
 import org.itson.componenteemisor.IEmisor;
 import org.itson.componentereceptor.IReceptor;
 import org.itson.paquetedto.PaqueteDTO;
-
+import com.google.gson.GsonBuilder;
+import Util.LocalDateTimeAdapter;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -103,27 +106,38 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
         }
     }
 
-    // --- RECEPCIÓN DE MENSAJES (IReceptor) ---
-
-    @Override
+   
+@Override
     public void recibirCambio(PaqueteDTO paquete) {
         String tipo = paquete.getTipoEvento();
-        String contenido = paquete.getContenido().toString();
         
-        System.out.println("[LogicaCliente] Paquete recibido: " + tipo);
         
-        // Si el login fue exitoso, guardamos al usuario actual en memoria
-        if (tipo.equals("LOGIN_OK")) {
-            this.usuarioActual = new UsuarioOP(0, contenido, "", "", 0);
-        }
-        if(tipo.equals("LISTA_USUARIOS")){
-            UsuarioOP notificacion = new UsuarioOP(0, "LISTA_USUARIOS", contenido.toString(), "", 0);
+        if(tipo.equals("MENSAJE")){
+            Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
+            String json = gson.toJson(paquete.getContenido());
+            MensajeDTO msjDTO = gson.fromJson(json, MensajeDTO.class);
+            
+            String infoMensaje = msjDTO.getNombreUsuario() + ":" + msjDTO.getContenidoMensaje();
+            UsuarioOP notificacion = new UsuarioOP(0, "MENSAJE", infoMensaje, "", 0);
             notificar(notificacion);
             return;
         }
         
-        // Notificamos a la GUI (Vista) para que reaccione
-        // Usamos UsuarioOP como un objeto genérico de transporte hacia la vista
+        String contenido = paquete.getContenido().toString();
+        
+        System.out.println("[LogicaCliente] Paquete recibido: " + tipo);
+        
+        if (tipo.equals("LOGIN_OK")) {
+            this.usuarioActual = new UsuarioOP(0, contenido, "", "", 0);
+        }
+        if(tipo.equals("LISTA_USUARIOS")){
+            UsuarioOP notificacion = new UsuarioOP(0, "LISTA_USUARIOS", contenido, "", 0);
+            notificar(notificacion);
+            return;
+        }
+        
         UsuarioOP notificacion = new UsuarioOP(0, tipo, contenido, "", 0);
         notificar(notificacion);
     }

@@ -67,15 +67,15 @@ public class GUIInicioSesion extends javax.swing.JFrame implements INotificadorN
 
             if ("LOGIN_OK".equals(tipoEvento)) {
                 JOptionPane.showMessageDialog(this, "Bienvenido " + contenido);
-                abrirInicio();
+                abrirInicio(contenido);
             } else if ("ERROR".equals(tipoEvento)) {
                 JOptionPane.showMessageDialog(this, contenido, "Error de Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
 
-    private void abrirInicio() {
-        GUIPRINCIPAL inicio = new GUIPRINCIPAL();
+    private void abrirInicio(String nombreUsurio) {
+        GUIPRINCIPAL inicio = new GUIPRINCIPAL(nombreUsurio);
         inicio.setVisible(true);
         this.dispose();
     }

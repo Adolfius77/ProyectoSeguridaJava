@@ -5,6 +5,7 @@
 package Controlador;
 
 import ObjetoPresentacion.UsuarioOP;
+import Observador.INotificadorNuevoMensaje;
 
 /**
  *
@@ -24,6 +25,8 @@ public interface IControlador {
 
     // Mensaje grupal
     void enviarMensajeGrupal(String contenido);
-    
+
     void pedirListaUsuarios();
+
+    void agregarObservador(INotificadorNuevoMensaje observador);
 }

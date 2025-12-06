@@ -1,5 +1,7 @@
 package Emisor;
-
+import com.google.gson.GsonBuilder; 
+import Util.LocalDateTimeAdapter;   
+import java.time.LocalDateTime;
 
 import ObserverReceptor.ObservableEnvios;
 import ObserverReceptor.ObservadorEnvios;
@@ -10,7 +12,9 @@ import org.itson.paquetedto.PaqueteDTO;
 
 public class ColaEnvios implements ObservableEnvios {
     private Queue<PaqueteDTO> cola = new LinkedList<>();
-    private Gson gson = new Gson();
+   private Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .create();
     private ObservadorEnvios observador; // Solo un cliente TCP observando
 
     @Override
