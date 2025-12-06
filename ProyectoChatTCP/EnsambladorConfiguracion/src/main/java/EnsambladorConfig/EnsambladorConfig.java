@@ -20,10 +20,7 @@ import java.util.Properties;
 /**
  * EnsambladorConfig singleton que carga propiedades, inicializa red, GestorSeguridad y crea LogicaCliente para el cliente de chat.
  *
- * Gestiona el intercambio automático de llaves públicas entre cliente y servidor mediante:
- * 1. Generación automática de par de llaves RSA (pública/privada) en GestorSeguridad
- * 2. Intercambio automático de llaves públicas en cada conexión TCP
- * 3. Cifrado/descifrado híbrido RSA + AES-GCM de todos los mensajes
+ * Gestiona el intercambio automático de llaves públicas entre cliente y servidor mediante: 1. Generación automática de par de llaves RSA (pública/privada) en GestorSeguridad 2. Intercambio automático de llaves públicas en cada conexión TCP 3. Cifrado/descifrado híbrido RSA + AES-GCM de todos los mensajes
  */
 public class EnsambladorConfig {
 
@@ -52,7 +49,7 @@ public class EnsambladorConfig {
             byte[] llavePublica = gestorSeguridad.obtenerPublicaBytes();
             System.out.println("[EnsambladorConfig] GestorSeguridad inicializado con éxito");
             System.out.println("[EnsambladorConfig] Llave pública RSA generada (Base64): "
-                + Base64.getEncoder().encodeToString(llavePublica).substring(0, 50) + "...");
+                    + Base64.getEncoder().encodeToString(llavePublica).substring(0, 50) + "...");
         } catch (Exception e) {
             System.err.println("[EnsambladorConfig] Error al crear GestorSeguridad: " + e.getMessage());
             throw new IOException("No se pudo inicializar el sistema de cifrado", e);
@@ -191,10 +188,10 @@ public class EnsambladorConfig {
             // Ejemplo de función en LogicaCliente
             // El intercambio de llaves públicas ocurre automáticamente en ClienteTCP
             logica.registrar(
-                    "Jack",
+                    "EsteSiExiteste",
                     "murrieta09",
-                    ensamblador.getHostServidor(),       // enviar al servidor
-                    ensamblador.getPuertoServidor(),     // puerto del servidor
+                    ensamblador.getHostServidor(), // enviar al servidor
+                    ensamblador.getPuertoServidor(), // puerto del servidor
                     publicKeyString
             );
 

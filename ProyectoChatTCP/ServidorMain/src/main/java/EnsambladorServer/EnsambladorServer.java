@@ -15,8 +15,11 @@ import ServidorMain.ReceptorServidor;
 import ServidorMain.ServidorMain;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.PublicKey;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import org.itson.componenteemisor.IEmisor;
 import org.itson.componentereceptor.IReceptor;
 
@@ -33,6 +36,8 @@ import org.itson.componentereceptor.IReceptor;
  */
 public class EnsambladorServer {
 
+    private static EnsambladorServer instancia; // Singleton para acceso global
+
     private String host;
     private int puertoEntrada;
     private int puertoSalida;
@@ -42,6 +47,10 @@ public class EnsambladorServer {
     private GestorSeguridad gestorSeguridad;
     private ClienteTCP clienteTCP;
     private ServidorTCP servidorTCP;
+
+    // Caché de llaves públicas de clientes conectados
+    // Clave: "host:puerto", Valor: PublicKey del cliente
+    private static Map<String, PublicKey> cacheLlavesClientes = new ConcurrentHashMap<>();
 
     public EnsambladorServer(String config_servidorMain) throws IOException {
         Properties props = new Properties();
@@ -63,6 +72,9 @@ public class EnsambladorServer {
         } else {
             this.puertoSalida = Integer.parseInt(props.getProperty("puerto.servidor"));
         }
+
+        // Establecer como instancia singleton
+        instancia = this;
     }
 
     public void iniciar() {
@@ -123,6 +135,10 @@ public class EnsambladorServer {
 
     // ------------------- Getters -------------------
 
+    public static EnsambladorServer getInstancia() {
+        return instancia;
+    }
+
     public GestorSeguridad getGestorSeguridad() {
         return gestorSeguridad;
     }
@@ -143,6 +159,50 @@ public class EnsambladorServer {
         return emisorServidor;
     }
 
+    // ------------------- Gestión de Llaves Públicas de Clientes -------------------
+
+    /**
+     * Guarda la llave pública de un cliente en el caché
+     * @param host Host del cliente
+     * @param puerto Puerto del cliente
+     * @param llavePublica Llave pública RSA del cliente
+     */
+    public static void guardarLlaveCliente(String host, int puerto, PublicKey llavePublica) {
+        String clave = host + ":" + puerto;
+        cacheLlavesClientes.put(clave, llavePublica);
+        System.out.println("[EnsambladorServer] Llave pública guardada para cliente " + clave);
+    }
+
+    /**
+     * Guarda la llave pública de un cliente desde bytes Base64
+     */
+    public static void guardarLlaveClienteBase64(String host, int puerto, String llaveBase64) {
+        try {
+            byte[] llaveBytes = Base64.getDecoder().decode(llaveBase64);
+            GestorSeguridad gestor = instancia != null ? instancia.getGestorSeguridad() : new GestorSeguridad();
+            PublicKey llavePublica = gestor.importarPublica(llaveBytes);
+            if (llavePublica != null) {
+                guardarLlaveCliente(host, puerto, llavePublica);
+            }
+        } catch (Exception e) {
+            System.err.println("[EnsambladorServer] Error guardando llave pública: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Obtiene la llave pública de un cliente del caché
+     */
+    public static PublicKey obtenerLlaveCliente(String host, int puerto) {
+        String clave = host + ":" + puerto;
+        PublicKey llave = cacheLlavesClientes.get(clave);
+        if (llave != null) {
+            System.out.println("[EnsambladorServer] Llave pública encontrada para " + clave);
+        } else {
+            System.out.println("[EnsambladorServer] No se encontró llave pública para " + clave);
+        }
+        return llave;
+    }
+
     // ------------------- Main -------------------
 
     public static void main(String[] args) {
@@ -154,7 +214,6 @@ public class EnsambladorServer {
             EnsambladorServer ensamblador = new EnsambladorServer("config_servidorMain.properties");
             ensamblador.iniciar();
 
-            System.out.println("[Main] Servidor en ejecución. Presiona Ctrl+C para detener.\n");
 
             // Mantener el programa ejecutándose
             Thread.currentThread().join();
