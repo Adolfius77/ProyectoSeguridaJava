@@ -1,5 +1,5 @@
 package ModeloChatTCP;
-
+import ensamblador.EnsambladorRed;
 import DTO.UsuarioDTO;
 import java.util.Base64;
 import java.util.ArrayList;
@@ -11,6 +11,7 @@ import org.itson.ensamblador.EnsambladorRed; // Asegúrate de importar tu ensamb
 import ObjetoPresentacion.UsuarioOP;
 import Observador.IPublicadorNuevoMensaje;
 import Observador.INotificadorNuevoMensaje;
+import ensamblador.EnsambladorRed;
 
 public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
     
@@ -27,7 +28,7 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
         if (instancia == null) instancia = new LogicaCliente();
         return instancia;
     }
-    
+    S
     public void conectar() {
         if (emisor == null) {
             // Pasamos 'this' para que LogicaCliente reciba las respuestas del servidor

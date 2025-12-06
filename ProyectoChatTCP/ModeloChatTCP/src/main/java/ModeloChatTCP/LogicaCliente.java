@@ -10,6 +10,7 @@ import org.itson.paquetedto.PaqueteDTO;
 import ObjetoPresentacion.UsuarioOP;
 import Observador.IPublicadorNuevoMensaje;
 import Observador.INotificadorNuevoMensaje;
+import ensamblador.EnsambladorRed;
 import java.util.ArrayList;
 import java.util.List;
 
