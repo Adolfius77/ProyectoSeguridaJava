@@ -5,20 +5,65 @@
 package Vista;
 
 import Controlador.Controlador;
+import Modelo.Modelo;
+import ObjetoPresentacion.UsuarioOP;
+import Observador.INotificadorNuevoMensaje;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import javax.swing.BoxLayout;
 
-/**
- *
- * @author USER
- */
-public class GUIPRINCIPAL extends javax.swing.JFrame {
 
+public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuevoMensaje {
+
+ 
+    
     private Controlador controlador;
+    private Modelo modelo;
+    
+    public GUIPRINCIPAL() {
+        modelo = new Modelo();
+        modelo.agregarObservador(this);
+        this.controlador = new Controlador(modelo);
+        configurarVentana();
+    }
+    
     public GUIPRINCIPAL(Controlador controlador) {
         this.controlador = controlador;
         initComponents();
+        configurarVentana();
         
     }
-
+    
+    private void configurarVentana(){
+        this.setTitle("sistema de chat seguro");
+        this.setLocationRelativeTo(null);
+        
+        panelDinamico.setLayout(new BoxLayout(panelDinamico,BoxLayout.Y_AXIS));
+         
+    }
+    public void actualizarListaUsuarios(List<String> nombres) {
+        panelDinamico.removeAll(); // Limpiar lista anterior
+        
+        if (nombres.isEmpty()) {
+            javax.swing.JLabel lbl = new javax.swing.JLabel("No hay usuarios conectados");
+            lbl.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+            panelDinamico.add(lbl);
+        } else {
+            for (String nombre : nombres) {
+                // AQUÍ SE CREA Y AGREGA EL FORM DE USUARIO
+                formUsuarios item = new formUsuarios(nombre, controlador);
+                panelDinamico.add(item);
+            }
+        }
+        
+        // Refrescar la interfaz para mostrar cambios
+        panelDinamico.revalidate();
+        panelDinamico.repaint();
+    }
+    
+            
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -151,4 +196,24 @@ public class GUIPRINCIPAL extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel panelDinamico;
     // End of variables declaration//GEN-END:variables
-}
+
+    @Override
+    public void actualizar(UsuarioOP usuarioOP) {
+        String evento = usuarioOP.getNombre();
+        String contenido = usuarioOP.getUltimoMensaje();
+
+        if (evento.equals("LISTA_USUARIOS")) {
+            List<String> lista = procesarLista(contenido);
+            actualizarListaUsuarios(lista);
+        }
+        else if (evento.equals("MENSAJE")) {
+             System.out.println("Nuevo mensaje de: " + contenido); // (Depende de cómo mandes el origen)
+        }
+    }
+    private List<String> procesarLista(String raw) {
+        if(raw == null || raw.length() <= 2) return new ArrayList<>();
+        String limpio = raw.substring(1, raw.length() - 1); // Quitar corchetes
+        if (limpio.trim().isEmpty()) return new ArrayList<>();
+        return Arrays.asList(limpio.split(",\\s*"));
+    }
+    }

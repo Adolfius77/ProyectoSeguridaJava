@@ -4,6 +4,9 @@
  */
 package Vista;
 
+import Controlador.Controlador;
+import ObjetoPresentacion.UsuarioOP;
+
 /**
  *
  * @author USER
@@ -13,8 +16,29 @@ public class formUsuarios extends javax.swing.JPanel {
     /**
      * Creates new form formUsuarios
      */
+    private String nombreUsuario;
+    private Controlador controlador;
+
     public formUsuarios() {
         initComponents();
+    }
+
+    public formUsuarios(String nombreUsuario, Controlador controlador) {
+        this.nombreUsuario = nombreUsuario;
+        this.controlador = controlador;
+        initComponents();
+        cargarDatos();
+    }
+
+    private void cargarDatos() {
+        lblNombre.setText(nombreUsuario);
+    }
+
+    private void abrirChat() {
+        UsuarioOP destinatario = new UsuarioOP(0, nombreUsuario, "En línea", "", 0);
+        GUIChatIndividual chat = new GUIChatIndividual(destinatario, controlador);
+        chat.setVisible(true);
+        
     }
 
     /**
@@ -50,6 +74,11 @@ public class formUsuarios extends javax.swing.JPanel {
         lblNombre.setText("Nombre usuario");
 
         btnMensaje.setText("Mensaje");
+        btnMensaje.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMensajeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -92,6 +121,10 @@ public class formUsuarios extends javax.swing.JPanel {
                 .addGap(0, 0, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnMensajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMensajeActionPerformed
+        abrirChat();
+    }//GEN-LAST:event_btnMensajeActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

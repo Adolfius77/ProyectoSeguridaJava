@@ -4,16 +4,26 @@
  */
 package Vista;
 
+import Controlador.Controlador;
+import ObjetoPresentacion.UsuarioOP;
+
 /**
  *
  * @author riosr
  */
 public class GUIChatIndividual extends javax.swing.JFrame {
 
-    /**
-     * Creates new form GUIChatIndividual
-     */
+    private UsuarioOP destinatario;
+    private Controlador controlador;
+    
     public GUIChatIndividual() {
+        initComponents();
+    }
+    
+    public GUIChatIndividual(UsuarioOP destinatario, Controlador controlador) {
+        this.destinatario = destinatario;
+        this.controlador = controlador;
+        //terminar esto manana
         initComponents();
     }
 
