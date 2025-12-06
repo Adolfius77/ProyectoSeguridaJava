@@ -4,6 +4,7 @@
  */
 package Controlador;
 
+import Modelo.IModeloEscritura;
 import ObjetoPresentacion.UsuarioOP;
 
 /**
@@ -11,8 +12,8 @@ import ObjetoPresentacion.UsuarioOP;
  * @author Jack Murrieta
  */
 public class Controlador implements IControlador {
-    
-    private IModeloEscritura
+
+    private IModeloEscritura modelo;
 
     @Override
     public void iniciarSesion(String nombreUsuario, String contrasena) {
