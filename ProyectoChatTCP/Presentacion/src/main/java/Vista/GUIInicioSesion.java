@@ -4,17 +4,83 @@
  */
 package Vista;
 
+import Controlador.Controlador;
+import Controlador.IControlador;
+import Modelo.Modelo;
+import ObjetoPresentacion.UsuarioOP;
+import Observador.INotificadorNuevoMensaje;
+import java.awt.Cursor;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author garfi
  */
-public class GUIInicioSesion extends javax.swing.JFrame {
+public class GUIInicioSesion extends javax.swing.JFrame implements INotificadorNuevoMensaje {
+
+    private IControlador control;
+    private Modelo modelo;
 
     /**
      * Creates new form GUIInicioSesion
      */
     public GUIInicioSesion() {
         initComponents();
+        setLocationRelativeTo(null);
+        configurarLogica();
+        configurarEventosAdicionales();
+    }
+
+    private void configurarLogica() {
+
+        this.modelo = new Modelo();
+        this.control = new Controlador(modelo);
+        this.modelo.agregarObservador(this);
+
+        Validaciones.setOwner(this);
+    }
+
+    private void configurarEventosAdicionales() {
+
+        lblEnlaceRegistro.setCursor(new Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblEnlaceRegistro.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                abrirVentanaRegistro();
+            }
+        });
+    }
+
+    @Override
+    public void actualizar(UsuarioOP usuarioOP) {
+
+        SwingUtilities.invokeLater(() -> {
+
+            String tipoEvento = usuarioOP.getNombre();
+            String contenido = usuarioOP.getUltimoMensaje();
+
+            if ("LOGIN_OK".equals(tipoEvento)) {
+                JOptionPane.showMessageDialog(this, "Bienvenido " + contenido);
+                abrirChatIndividual();
+            } else if ("ERROR".equals(tipoEvento)) {
+                JOptionPane.showMessageDialog(this, contenido, "Error de Inicio de Sesión", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+
+    private void abrirChatIndividual() {
+        GUIChatIndividual chat = new GUIChatIndividual();
+        chat.setVisible(true);
+        this.dispose();
+    }
+
+    private void abrirVentanaRegistro() {
+        GUIRegistro registro = new GUIRegistro();
+        registro.setVisible(true);
+        this.dispose();
     }
 
     /**
@@ -174,7 +240,25 @@ public class GUIInicioSesion extends javax.swing.JFrame {
     }//GEN-LAST:event_txtUsuarioActionPerformed
 
     private void btnInicioSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioSesionActionPerformed
-        // TODO add your handling code here:
+        String usuario = txtUsuario.getText();
+        String password = txtContraseña.getText();
+        
+        if (Validaciones.esTextoVacio(usuario)) {
+            return; 
+        }
+
+        if (!Validaciones.esNombreUsuarioValido(usuario)) {
+            return;
+        }
+
+        if (!Validaciones.esContrasenaValida(password)) {
+            return;
+        }
+        
+        System.out.println("[GUIInicioSesion] Enviando solicitud de login para: " + usuario);
+        control.iniciarSesion(usuario, password);
+        
+        btnInicioSesion.setEnabled(false);
     }//GEN-LAST:event_btnInicioSesionActionPerformed
 
     /**
@@ -223,4 +307,5 @@ public class GUIInicioSesion extends javax.swing.JFrame {
     private javax.swing.JTextField txtContraseña;
     private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
+
 }

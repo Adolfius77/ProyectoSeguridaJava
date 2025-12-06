@@ -92,7 +92,7 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
         paquete.setContenido(contenido);
         paquete.setHost("localhost");
         paquete.setPuertoOrigen(ensamblador.getPuertoEscucha());
-        paquete.setPuertoDestino(5556); // 5556 es el puerto del Bus
+        paquete.setPuertoDestino(5555); 
         
         if (emisor != null) {
             emisor.enviarCambio(paquete);

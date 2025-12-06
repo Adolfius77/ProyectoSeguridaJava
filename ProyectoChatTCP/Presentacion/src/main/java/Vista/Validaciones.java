@@ -31,7 +31,7 @@ public class Validaciones {
     /**
      * Muestra un mensaje de error si la validación falla.
      */
-    private static void mostrarError(String mensaje) {
+    public static void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(
                 owner,
                 mensaje,
@@ -91,6 +91,30 @@ public class Validaciones {
     public static boolean esMensajeValido(String mensaje) {
         if (mensaje == null || mensaje.trim().isEmpty()) {
             mostrarError("El mensaje no puede estar vacío.");
+            return false;
+        }
+        return true;
+    }
+    
+    public static boolean esUsuarioDuplicado(String mensajeServidor, String nombreUsuario) {
+        if ("Usuario ya existe".equalsIgnoreCase(mensajeServidor)) {
+            JOptionPane.showMessageDialog(
+                    owner,
+                    "El nombre de usuario '" + nombreUsuario + "' ya existe.",
+                    "Usuario Duplicado",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return true;
+        }
+        return false;
+    }
+    
+    public static boolean sonContrasenasIguales(String pass1, String pass2) {
+        if (pass1 != null && !pass1.equals(pass2)) {
+            JOptionPane.showMessageDialog(owner, 
+                    "Las contraseñas no coinciden.", 
+                    "Error de validación", 
+                    JOptionPane.WARNING_MESSAGE);
             return false;
         }
         return true;

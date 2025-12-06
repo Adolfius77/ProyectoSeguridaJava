@@ -26,6 +26,10 @@ public class ServidorTCP {
             e.printStackTrace();
         }
     }
+    
+    public int getPuerto() {
+        return this.puerto;
+    }
 
     public void setCifradoHabilitado(boolean habilitado) {
         this.cifradoHabilitado = habilitado;
