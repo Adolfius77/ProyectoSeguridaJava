@@ -1,7 +1,8 @@
 package Emisor;
 
-import ObserverEmisor.ObservableEnvios;
-import ObserverEmisor.ObservadorEnvios;
+
+import ObserverReceptor.ObservableEnvios;
+import ObserverReceptor.ObservadorEnvios;
 import com.google.gson.Gson;
 import java.util.LinkedList;
 import java.util.Queue;

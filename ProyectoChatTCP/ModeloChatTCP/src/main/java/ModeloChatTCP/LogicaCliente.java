@@ -2,15 +2,17 @@ package ModeloChatTCP;
 
 import DTO.UsuarioDTO;
 import DTO.MensajeDTO;
-import java.util.Base64;
+
+import ObjetoPresentacion.UsuarioOP;
+import Observador.INotificadorNuevoMensaje;
+import Observador.IPublicadorNuevoMensaje;
+import ensamblador.EnsambladorRed;
 import org.itson.componenteemisor.IEmisor;
 import org.itson.componentereceptor.IReceptor;
-import org.itson.ensamblador.EnsambladorRed; // Asegúrate de tener la dependencia en pom.xml
 import org.itson.paquetedto.PaqueteDTO;
-import ObjetoPresentacion.UsuarioOP;
-import Observador.IPublicadorNuevoMensaje;
-import Observador.INotificadorNuevoMensaje;
+
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
@@ -22,37 +24,49 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
     private UsuarioOP usuarioActual; 
 
     private LogicaCliente() {
+        // Obtenemos la instancia del Ensamblador que vive en el módulo Red
         this.ensamblador = EnsambladorRed.getInstancia();
     }
     
     public static synchronized LogicaCliente getInstance() {
-        if (instancia == null) instancia = new LogicaCliente();
+        if (instancia == null) {
+            instancia = new LogicaCliente();
+        }
         return instancia;
     }
     
+    /**
+     * Inicia la conexión de red ensamblando los componentes.
+     */
     public void conectar() {
         if (emisor == null) {
+            // Pasamos 'this' para que esta misma clase reciba los mensajes del servidor
             this.emisor = ensamblador.ensamblar(this);
-            System.out.println("[LogicaCliente] Conectado a la red.");
+            System.out.println("[LogicaCliente] Conexión establecida.");
         }
     }
 
     // --- MÉTODOS DE NEGOCIO ---
 
     public void registrar(String usuario, String password) {
-        conectar();
+        conectar(); // Asegurar conexión
+        
         UsuarioDTO dto = new UsuarioDTO();
         dto.setNombreUsuario(usuario);
-        dto.setContrasena(password);
-        // Adjuntar llave pública
+        dto.setContrasena(password); // Se enviará para que el server la hashee
+        
+        // Adjuntamos nuestra llave pública para que el servidor pueda cifrarnos respuestas futuras
         byte[] key = ensamblador.getPublicKey();
-        if(key != null) dto.setPublicKey(Base64.getEncoder().encodeToString(key));
+        if (key != null) {
+            dto.setPublicKey(Base64.getEncoder().encodeToString(key));
+        }
         
         enviarPaquete("REGISTRO", dto);
     }
 
     public void login(String usuario, String password) {
-        conectar();
+        conectar(); // Asegurar conexión
+        
         UsuarioDTO dto = new UsuarioDTO();
         dto.setNombreUsuario(usuario);
         dto.setContrasena(password);
@@ -61,10 +75,9 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
     }
     
     public void enviarMensaje(String texto, UsuarioOP destino) {
-        // En este ejemplo simple enviamos un Map o el DTO
-        // Usamos un objeto simple compatible con JSON
+        // Creamos el DTO del mensaje
         MensajeDTO msj = new MensajeDTO(
-            usuarioActual != null ? usuarioActual.getNombre() : "Anon",
+            usuarioActual != null ? usuarioActual.getNombre() : "Anonimo",
             texto,
             destino,
             null
@@ -79,31 +92,36 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
         paquete.setContenido(contenido);
         paquete.setHost("localhost");
         paquete.setPuertoOrigen(ensamblador.getPuertoEscucha());
-        paquete.setPuertoDestino(5556); // Bus
+        paquete.setPuertoDestino(5556); // 5556 es el puerto del Bus
         
-        emisor.enviarCambio(paquete);
+        if (emisor != null) {
+            emisor.enviarCambio(paquete);
+        } else {
+            System.err.println("[LogicaCliente] Error: Emisor no inicializado.");
+        }
     }
 
-    // --- RECEPCIÓN DE MENSAJES ---
+    // --- RECEPCIÓN DE MENSAJES (IReceptor) ---
 
     @Override
     public void recibirCambio(PaqueteDTO paquete) {
         String tipo = paquete.getTipoEvento();
-        System.out.println("[Cliente] Recibido: " + tipo);
+        String contenido = paquete.getContenido().toString();
         
+        System.out.println("[LogicaCliente] Paquete recibido: " + tipo);
+        
+        // Si el login fue exitoso, guardamos al usuario actual en memoria
         if (tipo.equals("LOGIN_OK")) {
-            String nombre = paquete.getContenido().toString();
-            this.usuarioActual = new UsuarioOP(0, nombre, "", "", 0);
+            this.usuarioActual = new UsuarioOP(0, contenido, "", "", 0);
         }
         
-        // Notificar a la UI (Observadores)
-        // Convertimos el contenido a UsuarioOP si es un mensaje, o un objeto especial para alertas
-        // Para simplificar, pasamos un UsuarioOP "dummy" con el contenido en el último mensaje
-        // Idealmente usarías una interfaz más rica para notificar eventos distintos
-        
-        UsuarioOP notificacion = new UsuarioOP(0, tipo, paquete.getContenido().toString(), "", 0);
+        // Notificamos a la GUI (Vista) para que reaccione
+        // Usamos UsuarioOP como un objeto genérico de transporte hacia la vista
+        UsuarioOP notificacion = new UsuarioOP(0, tipo, contenido, "", 0);
         notificar(notificacion);
     }
+
+    // --- PATRÓN OBSERVER (IPublicadorNuevoMensaje) ---
 
     @Override
     public void agregarObservador(INotificadorNuevoMensaje observador) {
@@ -112,7 +130,7 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
 
     @Override
     public void notificar(UsuarioOP usuarioOP) {
-        for(INotificadorNuevoMensaje obs : observadores) {
+        for (INotificadorNuevoMensaje obs : observadores) {
             obs.actualizar(usuarioOP);
         }
     }
