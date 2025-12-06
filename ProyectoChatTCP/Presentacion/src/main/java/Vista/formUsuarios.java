@@ -40,6 +40,12 @@ public class formUsuarios extends javax.swing.JPanel {
         chat.setVisible(true);
         
     }
+    @Override
+    public java.awt.Dimension getMaximumSize() {
+        java.awt.Dimension d = getPreferredSize();
+        d.width = Integer.MAX_VALUE; 
+        return d;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

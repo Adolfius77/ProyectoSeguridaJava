@@ -73,7 +73,9 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
         
         enviarPaquete("LOGIN", dto);
     }
-    
+    public void solicitarListaUsuarios(){
+        enviarPaquete("SOLICITAR_USUARIOS","");
+    }
     public void enviarMensaje(String texto, UsuarioOP destino) {
         // Creamos el DTO del mensaje
         MensajeDTO msj = new MensajeDTO(

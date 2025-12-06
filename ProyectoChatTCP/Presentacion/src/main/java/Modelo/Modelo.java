@@ -44,4 +44,8 @@ public class Modelo implements IModeloEscritura, IPublicadorNuevoMensaje {
     public void notificar(UsuarioOP usuarioOP) {
         // La lógica es quien notifica realmente
     }
+    @Override
+    public void solicitarUsuarios(){
+        logicaCliente.solicitarListaUsuarios();
+    }
 }

@@ -25,5 +25,7 @@ public interface IModeloEscritura {
     void enviarMensajePrivado(UsuarioOP usuarioDestino, String contenido);
 
     void enviarMensajeGrupal(String contenido);
+    
+    void solicitarUsuarios();
 
 }
