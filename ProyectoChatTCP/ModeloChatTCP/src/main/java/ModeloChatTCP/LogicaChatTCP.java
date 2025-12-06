@@ -6,7 +6,7 @@ package ModeloChatTCP;
 
 /**
  *
- * @author Usuario
+ * @author Jack Murrieta
  */
 public class LogicaChatTCP {
     

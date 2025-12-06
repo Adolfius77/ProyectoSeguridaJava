@@ -6,22 +6,10 @@
         <artifactId>ProyectoChatTCP</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>ModeloChatTCP</artifactId>
+    <artifactId>DTOs</artifactId>
     <packaging>jar</packaging>
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ComponenteReceptor</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>ComponenteEmisor</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
     <properties>
         <maven.compiler.release>24</maven.compiler.release>
-        <exec.mainClass>org.itson.modelochattcp.ModeloChatTCP</exec.mainClass>
+        <exec.mainClass>org.itson.dtos.DTOs</exec.mainClass>
     </properties>
 </project>
