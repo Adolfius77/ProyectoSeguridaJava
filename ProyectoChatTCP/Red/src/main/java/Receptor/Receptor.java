@@ -34,12 +34,19 @@ public class Receptor implements ObservadorRecibos {
         PaqueteDTO paquete = cola.dequeue();
 
         if (paquete == null) {
-            System.out.println("No hay paquetes en cola al recibir la notificación.");
+            System.out.println("[Receptor] No hay paquetes en cola al recibir la notificación.");
             return;
         }
-        System.out.println("jesus en moto");
+
+        System.out.println("[Receptor] Paquete desencriptado recibido:");
+        System.out.println("  - Tipo: " + paquete.getTipoEvento());
+        System.out.println("  - Host: " + paquete.getHost());
+        System.out.println("  - Puerto destino: " + paquete.getPuertoDestino());
+
         if (receptor != null) {
             receptor.recibirCambio(paquete);
+        } else {
+            System.err.println("[Receptor] ¡Advertencia! No hay receptor configurado");
         }
     }
 }

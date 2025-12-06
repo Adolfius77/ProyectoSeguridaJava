@@ -108,9 +108,19 @@ public class ClienteTCP implements ObservadorEnvios {
     }
 
     public void enviarPaquete(String paquete, String host, int puerto) {
+        System.out.println("[ClienteTCP] Intentando conectar a " + host + ":" + puerto);
+
+        if (puerto == 0) {
+            System.err.println("[ClienteTCP] ✗ ERROR: Puerto destino es 0. No se puede conectar.");
+            System.err.println("[ClienteTCP] Paquete que se intentaba enviar: " + paquete.substring(0, Math.min(200, paquete.length())));
+            return;
+        }
+
         try (Socket socket = new Socket(host, puerto);
              DataOutputStream out = new DataOutputStream(socket.getOutputStream());
              DataInputStream in = new DataInputStream(socket.getInputStream())) {
+
+            System.out.println("[ClienteTCP] ✓ Conexión establecida con " + host + ":" + puerto);
 
             if (cifradoHabilitado && gestorSeguridad != null) {
                 // 1. Intercambio de llaves: recibir llave pública del servidor

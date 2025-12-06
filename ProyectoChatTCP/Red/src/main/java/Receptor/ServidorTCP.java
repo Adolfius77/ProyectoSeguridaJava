@@ -99,6 +99,9 @@ public class ServidorTCP {
     }
 
     public void recibirPaquete(Socket cliente) {
+        String clienteRemoto = cliente.getInetAddress().getHostAddress() + ":" + cliente.getPort();
+        System.out.println("[ServidorTCP] Nueva conexión entrante desde: " + clienteRemoto);
+
         try (DataInputStream in = new DataInputStream(cliente.getInputStream());
              DataOutputStream out = new DataOutputStream(cliente.getOutputStream())) {
 
@@ -108,11 +111,13 @@ public class ServidorTCP {
                 out.writeInt(nuestraLlave.length);
                 out.write(nuestraLlave);
                 out.flush();
+                System.out.println("[ServidorTCP] Llave pública enviada a " + clienteRemoto);
 
                 // 2. Recibir llave pública del cliente
                 int tamanoLlave = in.readInt();
                 byte[] llavePublicaCliente = new byte[tamanoLlave];
                 in.readFully(llavePublicaCliente);
+                System.out.println("[ServidorTCP] Llave pública recibida desde " + clienteRemoto);
 
                 PublicKey llaveCliente = gestorSeguridad.importarPublica(llavePublicaCliente);
 
@@ -120,15 +125,18 @@ public class ServidorTCP {
                 int tamanoMensaje = in.readInt();
                 byte[] mensajeCifrado = new byte[tamanoMensaje];
                 in.readFully(mensajeCifrado);
+                System.out.println("[ServidorTCP] Mensaje cifrado recibido (" + tamanoMensaje + " bytes) desde " + clienteRemoto);
 
                 // 4. Descifrar mensaje
                 String mensajeDescifrado = gestorSeguridad.descifrar(mensajeCifrado);
 
                 if (mensajeDescifrado != null) {
+                    System.out.println("[ServidorTCP] Mensaje descifrado correctamente, agregando a cola");
+                    System.out.println("[ServidorTCP] Contenido: " + mensajeDescifrado.substring(0, Math.min(100, mensajeDescifrado.length())) + "...");
                     cola.queue(mensajeDescifrado);
-                    System.out.println("[ServidorTCP] Paquete CIFRADO recibido y descifrado correctamente");
+                    System.out.println("[ServidorTCP] ✓ Paquete CIFRADO recibido y descifrado correctamente");
                 } else {
-                    System.err.println("[ServidorTCP] Error: No se pudo descifrar el mensaje");
+                    System.err.println("[ServidorTCP] ✗ Error: No se pudo descifrar el mensaje");
                 }
             } else {
                 // Recibir sin cifrado

@@ -39,8 +39,16 @@ public class ServidorMain {
 
     // Enviar respuesta al EventBus / cliente
     public void enviarRespuesta(PaqueteDTO paquete) {
+        System.out.println("[ServidorMain.enviarRespuesta] Enviando paquete:");
+        System.out.println("  - Tipo: " + paquete.getTipoEvento());
+        System.out.println("  - Host: " + paquete.getHost());
+        System.out.println("  - Puerto destino: " + paquete.getPuertoDestino());
+        System.out.println("  - Contenido: " + paquete.getContenido());
+
         if (emisor != null) {
             emisor.enviarCambio(paquete);
+        } else {
+            System.err.println("[ServidorMain.enviarRespuesta] ERROR: Emisor es null!");
         }
     }
 

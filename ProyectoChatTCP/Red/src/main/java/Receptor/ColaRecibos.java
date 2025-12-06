@@ -38,9 +38,11 @@ public class ColaRecibos implements ObservableRecibos {
     }
 
     public void queue(String paquete) {
+        System.out.println("[ColaRecibos] Recibiendo paquete JSON para procesar...");
         cola.add(paquete);
+        System.out.println("[ColaRecibos] Paquete agregado a cola, notificando observadores...");
         notificar();
-        System.out.println("[ColaRecibos] agregado: " + paquete);
+        System.out.println("[ColaRecibos] Paquete completo: " + paquete);
     }
 
     public PaqueteDTO<?> dequeue() {

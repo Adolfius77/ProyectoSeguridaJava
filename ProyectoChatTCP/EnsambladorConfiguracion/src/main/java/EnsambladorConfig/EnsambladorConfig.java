@@ -122,7 +122,11 @@ public class EnsambladorConfig {
         receptor.setCola(colaRecibos);
         receptor.setReceptor(receptorCliente);
 
+        // IMPORTANTE: Agregar el receptor como observador de la cola
+        colaRecibos.agregarObservador(receptor);
+
         System.out.println("[EnsambladorConfig] LogicaCliente y ReceptorPaquete inicializados y listos para uso");
+        System.out.println("[EnsambladorConfig] ✓ Receptor configurado para procesar respuestas del servidor");
     }
 
     // ------------------- Getters -------------------
@@ -187,7 +191,7 @@ public class EnsambladorConfig {
 
             // Ejemplo de función en LogicaCliente
             // El intercambio de llaves públicas ocurre automáticamente en ClienteTCP
-            logica.registrar(
+            logica.login(
                     "EsteSiExiteste",
                     "murrieta09",
                     ensamblador.getHostServidor(), // enviar al servidor

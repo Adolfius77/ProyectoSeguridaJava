@@ -8,8 +8,7 @@ import org.itson.componentereceptor.IReceptor;
 import org.itson.paquetedto.PaqueteDTO;
 
 /**
- * Receptor de paquetes que vienen desde el ServidorMain.
- * Procesa respuestas de login y registro enviadas al cliente.
+ * Receptor de paquetes que vienen desde el ServidorMain. Procesa respuestas de login y registro enviadas al cliente.
  */
 public class ReceptorPaquete implements IReceptor {
 
