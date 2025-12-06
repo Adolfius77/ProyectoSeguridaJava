@@ -1,3 +1,4 @@
+
 package EventBus;
 
 import Datos.RepositorioUsuarios;
@@ -11,13 +12,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.itson.componenteemisor.IEmisor;
 import org.itson.paquetedto.PaqueteDTO;
 
+
 public class EventBus {
 
     private Map<String, List<Servicio>> servicios;
+    private List<String> usuariosConectados;
     private IEmisor emisor;
 
     public EventBus() {
         this.servicios = new ConcurrentHashMap<>();
+        this.usuariosConectados = new ArrayList<>();
     }
 
     public void setEmisor(IEmisor emisor) {
@@ -25,32 +29,71 @@ public class EventBus {
     }
 
     public void publicarEvento(PaqueteDTO paquete) {
-        // Normalizar datos de origen
+        
         Servicio origen = new Servicio(paquete.getPuertoOrigen(), paquete.getHost());
         if (paquete.getHost() == null) paquete.setHost(origen.getHost());
         if (paquete.getPuertoOrigen() == 0) paquete.setPuertoOrigen(origen.getPuerto());
 
         String tipo = paquete.getTipoEvento().toUpperCase();
 
-        // --- LÓGICA DE SERVIDOR ---
+      
         if (tipo.equals("REGISTRO")) {
             procesarRegistro(paquete);
             return;
         } else if (tipo.equals("LOGIN")) {
             procesarLogin(paquete);
             return;
-        }
-        // --------------------------
-
-        if (tipo.equals("INICIAR_CONEXION")) {
-             // Solo registrar servicio, no reenviar
-             Servicio nuevoServicio = new Servicio(paquete.getPuertoOrigen(), paquete.getHost());
+        }else if(tipo.equals("INICIAR_CONEXION")){
+           Servicio nuevoServicio = new Servicio(paquete.getPuertoOrigen(), paquete.getHost());
              registrarServicio("MENSAJE", nuevoServicio); // Suscripción por defecto
              System.out.println("[EventBus] Cliente conectado: " + nuevoServicio);
-             return;
+             return; 
+        }else if(tipo.equals("SOLICITAR_USUARIOS")){
+           enviarListaUsuarios();
+           return;
+             
         }
 
         notificarServicios(paquete);
+    }
+    private void enviarListaUsuarios(PaqueteDTO paquete){
+        LinkedTreeMap data = (LinkedTreeMap) paquete.getContenido();
+        String user = (String) data.get("nombreUsuario");
+        String pass = (String) data.get("contrasena");
+
+        if (RepositorioUsuarios.validar(user, pass)) {
+            Servicio s = new Servicio(paquete.getPuertoOrigen(), paquete.getHost());
+            registrarServicio("MENSAJE", s);
+            registrarServicio("LISTA_USUARIOS", s);
+            
+            
+            if (!usuariosConectados.contains(user)) {
+                usuariosConectados.add(user);
+            }
+            
+            enviarRespuesta(paquete, "LOGIN_OK", user);
+            
+            
+            enviarListaUsuarios();
+        } else {
+            enviarRespuesta(paquete, "ERROR", "Credenciales Incorrectas");
+        }
+    }
+    private void enviarListaUsuarios() {
+     
+        PaqueteDTO paqueteLista = new PaqueteDTO();
+        paqueteLista.setTipoEvento("LISTA_USUARIOS");
+        paqueteLista.setContenido(new ArrayList<>(usuariosConectados));
+        paqueteLista.setHost("localhost");
+        
+        
+        List<Servicio> suscriptores = servicios.get("LISTA_USUARIOS");
+        if (suscriptores != null) {
+            for (Servicio s : suscriptores) {
+                paqueteLista.setPuertoDestino(s.getPuerto());
+                emisor.enviarCambio(paqueteLista);
+            }
+        }
     }
 
     private void procesarRegistro(PaqueteDTO paquete) {
