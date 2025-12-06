@@ -4,17 +4,19 @@
  */
 package Vista;
 
+import Controlador.Controlador;
+
 /**
  *
  * @author USER
  */
 public class GUIPRINCIPAL extends javax.swing.JFrame {
 
-    /**
-     * Creates new form GUIPRINCIPAL
-     */
-    public GUIPRINCIPAL() {
+    private Controlador controlador;
+    public GUIPRINCIPAL(Controlador controlador) {
+        this.controlador = controlador;
         initComponents();
+        
     }
 
     /**

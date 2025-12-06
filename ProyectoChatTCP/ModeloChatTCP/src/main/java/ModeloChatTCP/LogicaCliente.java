@@ -114,6 +114,11 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
         if (tipo.equals("LOGIN_OK")) {
             this.usuarioActual = new UsuarioOP(0, contenido, "", "", 0);
         }
+        if(tipo.equals("LISTA_USUARIOS")){
+            UsuarioOP notificacion = new UsuarioOP(0, "LISTA_USUARIOS", contenido.toString(), "", 0);
+            notificar(notificacion);
+            return;
+        }
         
         // Notificamos a la GUI (Vista) para que reaccione
         // Usamos UsuarioOP como un objeto genérico de transporte hacia la vista
