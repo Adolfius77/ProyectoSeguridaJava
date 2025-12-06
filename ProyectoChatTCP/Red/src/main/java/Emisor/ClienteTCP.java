@@ -45,6 +45,10 @@ public class ClienteTCP implements ObservadorEnvios {
         }
     }
 
+    /**
+     * Constructor original (mantener compatibilidad hacia atrás)
+     * Genera su propio GestorSeguridad
+     */
     public ClienteTCP(ColaEnvios cola, int puerto, String host) {
         this.cola = cola;
         this.puerto = puerto;
@@ -54,10 +58,28 @@ public class ClienteTCP implements ObservadorEnvios {
         try {
             this.gestorSeguridad = new GestorSeguridad();
             this.cifradoHabilitado = true;
-            System.out.println("[ClienteTCP] Cifrado habilitado con RSA + AES-GCM");
+            System.out.println("[ClienteTCP] Cifrado habilitado con RSA + AES-GCM (nuevo gestor)");
         } catch (Exception e) {
             System.err.println("[ClienteTCP] No se pudo inicializar el cifrado: " + e.getMessage());
             this.cifradoHabilitado = false;
+        }
+    }
+
+    /**
+     * Constructor que acepta un GestorSeguridad compartido (RECOMENDADO)
+     * Permite compartir las mismas llaves entre ClienteTCP y ServidorTCP
+     */
+    public ClienteTCP(ColaEnvios cola, int puerto, String host, GestorSeguridad gestorSeguridad) {
+        this.cola = cola;
+        this.puerto = puerto;
+        this.host = host;
+        this.gestorSeguridad = gestorSeguridad;
+        this.cifradoHabilitado = (gestorSeguridad != null);
+
+        if (this.cifradoHabilitado) {
+            System.out.println("[ClienteTCP] Cifrado habilitado con GestorSeguridad compartido");
+        } else {
+            System.out.println("[ClienteTCP] Cifrado deshabilitado (gestorSeguridad es null)");
         }
     }
 
@@ -76,6 +98,13 @@ public class ClienteTCP implements ObservadorEnvios {
             return gestorSeguridad.obtenerPublicaBytes();
         }
         return null;
+    }
+
+    /**
+     * Obtiene el GestorSeguridad asociado a este cliente
+     */
+    public GestorSeguridad getGestorSeguridad() {
+        return gestorSeguridad;
     }
 
     public void enviarPaquete(String paquete, String host, int puerto) {

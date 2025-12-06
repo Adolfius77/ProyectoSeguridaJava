@@ -1,5 +1,6 @@
 package ensamblador;
 
+import Cifrado.GestorSeguridad;
 import Emisor.ClienteTCP;
 import Emisor.ColaEnvios;
 import Emisor.Emisor;
@@ -45,16 +46,25 @@ public class EnsambladorBus {
     public void iniciar() {
         eventBus = new EventBus();
 
-        // emisor del bus
+        // Crear UN SOLO GestorSeguridad compartido para el EventBus
+        GestorSeguridad gestorSeguridad = null;
+        try {
+            gestorSeguridad = new GestorSeguridad();
+            System.out.println("[EventBus] GestorSeguridad creado y compartido entre ClienteTCP y ServidorTCP");
+        } catch (Exception e) {
+            System.err.println("[EventBus] Error al crear GestorSeguridad: " + e.getMessage());
+        }
+
+        // emisor del bus (usa el gestor compartido)
         ColaEnvios colaEnviosBus = new ColaEnvios();
-        ClienteTCP clienteTCPBus = new ClienteTCP(colaEnviosBus, puertoBus, host);
+        ClienteTCP clienteTCPBus = new ClienteTCP(colaEnviosBus, puertoBus, host, gestorSeguridad);
         colaEnviosBus.agregarObservador(clienteTCPBus);
         emisorBus = new Emisor(colaEnviosBus);
         eventBus.setEmisor(emisorBus);
 
-        // receptor
+        // receptor (usa el mismo gestor compartido)
         ColaRecibos colaRecibosBus = new ColaRecibos();
-        ServidorTCP servidorTCPBus = new ServidorTCP(colaRecibosBus, puertoEntrada);
+        ServidorTCP servidorTCPBus = new ServidorTCP(colaRecibosBus, puertoEntrada, gestorSeguridad);
         IReceptor publicador = new PublicadorEventos(puertoBus, host, eventBus);
         Receptor receptorBus = new Receptor();
         receptorBus.setCola(colaRecibosBus);

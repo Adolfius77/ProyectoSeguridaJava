@@ -4,16 +4,20 @@
  */
 package Vista;
 
+import Controlador.IControlador;
+
 /**
  *
  * @author garfi
  */
 public class GUIInicioSesion extends javax.swing.JFrame {
+    
+    private IControlador controlador;
 
     /**
      * Creates new form GUIInicioSesion
      */
-    public GUIInicioSesion() {
+    public GUIInicioSesion(IControlador controlador) {
         initComponents();
     }
 
@@ -175,6 +179,8 @@ public class GUIInicioSesion extends javax.swing.JFrame {
 
     private void btnInicioSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioSesionActionPerformed
         // TODO add your handling code here:
+        
+        controlador.iniciarSesion(nombreUsuario, contrasena);
     }//GEN-LAST:event_btnInicioSesionActionPerformed
 
     /**

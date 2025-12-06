@@ -25,6 +25,10 @@ public class ServidorTCP {
     private GestorSeguridad gestorSeguridad;
     private boolean cifradoHabilitado;
 
+    /**
+     * Constructor original (mantener compatibilidad hacia atrás)
+     * Genera su propio GestorSeguridad
+     */
     public ServidorTCP(ColaRecibos cola, int puerto) {
         this.cola = cola;
         this.puerto = puerto;
@@ -33,10 +37,27 @@ public class ServidorTCP {
         try {
             this.gestorSeguridad = new GestorSeguridad();
             this.cifradoHabilitado = true;
-            System.out.println("[ServidorTCP] Cifrado habilitado con RSA + AES-GCM");
+            System.out.println("[ServidorTCP] Cifrado habilitado con RSA + AES-GCM (nuevo gestor)");
         } catch (Exception e) {
             System.err.println("[ServidorTCP] No se pudo inicializar el cifrado: " + e.getMessage());
             this.cifradoHabilitado = false;
+        }
+    }
+
+    /**
+     * Constructor que acepta un GestorSeguridad compartido (RECOMENDADO)
+     * Permite compartir las mismas llaves entre ClienteTCP y ServidorTCP
+     */
+    public ServidorTCP(ColaRecibos cola, int puerto, GestorSeguridad gestorSeguridad) {
+        this.cola = cola;
+        this.puerto = puerto;
+        this.gestorSeguridad = gestorSeguridad;
+        this.cifradoHabilitado = (gestorSeguridad != null);
+
+        if (this.cifradoHabilitado) {
+            System.out.println("[ServidorTCP] Cifrado habilitado con GestorSeguridad compartido");
+        } else {
+            System.out.println("[ServidorTCP] Cifrado deshabilitado (gestorSeguridad es null)");
         }
     }
 
@@ -45,6 +66,13 @@ public class ServidorTCP {
      */
     public void setCifradoHabilitado(boolean habilitado) {
         this.cifradoHabilitado = habilitado && gestorSeguridad != null;
+    }
+
+    /**
+     * Obtiene el GestorSeguridad asociado a este servidor
+     */
+    public GestorSeguridad getGestorSeguridad() {
+        return gestorSeguridad;
     }
 
     public void iniciar() {
