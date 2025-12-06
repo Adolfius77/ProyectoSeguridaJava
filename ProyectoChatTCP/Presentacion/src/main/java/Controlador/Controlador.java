@@ -3,6 +3,7 @@ package Controlador;
 import Modelo.IModeloEscritura;
 import Modelo.Modelo; // Asegúrate de importar la implementación
 import ObjetoPresentacion.UsuarioOP;
+import Observador.INotificadorNuevoMensaje;
 
 public class Controlador implements IControlador {
 
@@ -45,6 +46,10 @@ public class Controlador implements IControlador {
     @Override
     public void pedirListaUsuarios() {
         modelo.solicitarUsuarios();
+    }
+    @Override
+    public void agregarObservador(INotificadorNuevoMensaje observador) {
+        modelo.agregarObservador(observador);
     }
     
 }

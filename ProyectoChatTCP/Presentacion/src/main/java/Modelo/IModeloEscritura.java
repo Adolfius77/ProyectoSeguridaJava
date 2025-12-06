@@ -5,6 +5,7 @@
 package Modelo;
 
 import ObjetoPresentacion.UsuarioOP;
+import Observador.INotificadorNuevoMensaje;
 
 /**
  *
@@ -27,5 +28,8 @@ public interface IModeloEscritura {
     void enviarMensajeGrupal(String contenido);
     
     void solicitarUsuarios();
+    
+    void agregarObservador(INotificadorNuevoMensaje observador);
+    
 
 }

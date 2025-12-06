@@ -39,6 +39,7 @@ public class formUsuarios extends javax.swing.JPanel {
         GUIChatIndividual chat = new GUIChatIndividual(destinatario, controlador);
         chat.setVisible(true);
         
+        
     }
     @Override
     public java.awt.Dimension getMaximumSize() {
