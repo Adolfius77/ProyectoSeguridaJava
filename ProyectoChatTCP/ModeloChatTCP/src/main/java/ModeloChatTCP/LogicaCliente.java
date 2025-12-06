@@ -125,6 +125,7 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
 
     @Override
     public void agregarObservador(INotificadorNuevoMensaje observador) {
+        observadores.clear();
         observadores.add(observador);
     }
 

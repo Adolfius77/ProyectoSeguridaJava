@@ -265,10 +265,8 @@ public class GUIRegistro extends javax.swing.JFrame implements INotificadorNuevo
         
         if (!Validaciones.sonContrasenasIguales(pass1, pass2)) return;
 
-        System.out.println("[GUIRegistro] Solicitando registro para: " + usuario);
-        control.registrarUsuario(usuario, pass1);
-
         btnRegistro.setEnabled(false);
+        System.out.println("[GUIRegistro] Solicitando registro para: " + usuario);
         control.registrarUsuario(usuario, pass1);
     }//GEN-LAST:event_btnRegistroActionPerformed
 
