@@ -12,32 +12,33 @@ import ObjetoPresentacion.UsuarioOP;
  * @author Jack Murrieta
  */
 public class Controlador implements IControlador {
-
+    
     private IModeloEscritura modelo;
-
+    
     @Override
     public void iniciarSesion(String nombreUsuario, String contrasena) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        modelo.iniciarSesion(nombreUsuario, contrasena);
     }
-
+    
     @Override
     public void registrarUsuario(String nombreUsuario, String contrasena) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        modelo.registrarUsuario(nombreUsuario, contrasena);
     }
-
+    
     @Override
     public void abrirChatUsuario(UsuarioOP usuarioOP) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        modelo.mostrarChatFrame(usuarioOP);
     }
-
+    
     @Override
     public void enviarMensajePrivado(UsuarioOP usuarioDestino, String contenido) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        modelo.enviarMensajePrivado(usuarioDestino, contenido);
     }
-
+    
     @Override
     public void enviarMensajeGrupal(String contenido) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        modelo.enviarMensajeGrupal(contenido);
+        
     }
-
+    
 }

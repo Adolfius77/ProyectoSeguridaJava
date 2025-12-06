@@ -16,8 +16,6 @@ public interface IModeloEscritura {
 
     void registrarUsuario(String nombreUsuario, String contrasena);
 
-    void enviarMensaje(String mensaje, UsuarioOP destinatario);
-
     void mostrarChatFrame(UsuarioOP usuarioOP);
     
     void mostrarChatGrupal();

@@ -30,11 +30,6 @@ public class Modelo implements IModeloEscritura, IPublicadorNuevoMensaje {
     }
 
     @Override
-    public void enviarMensaje(String mensaje, UsuarioOP destinatario) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
     public void mostrarChatFrame(UsuarioOP usuarioOP) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
