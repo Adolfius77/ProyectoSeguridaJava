@@ -47,6 +47,8 @@ public class ReceptorPaquete implements IReceptor {
     private void procesarLoginOk(PaqueteDTO paquete) {
         UsuarioDTO usuario = mapContenido(paquete.getContenido(), UsuarioDTO.class);
         logicaCliente.setUsuarioEnSesion(usuario);
+        //Settear el usuario al ModeloCHAT TCP el modelo ChatTCP o notificarselo
+        //pasarle la lista de usuariosDTO tambien 
         System.out.println("[ReceptorPaquete] Login exitoso: " + usuario.getNombreUsuario());
     }
 
@@ -57,11 +59,13 @@ public class ReceptorPaquete implements IReceptor {
 
     private void procesarRegistroOk(PaqueteDTO paquete) {
         String mensaje = (String) paquete.getContenido();
+        //lo envial al frame de iniciarSesion
         System.out.println("[ReceptorPaquete] Registro exitoso: " + mensaje);
     }
 
     private void procesarRegistroError(PaqueteDTO paquete) {
         String mensaje = (String) paquete.getContenido();
+        //le notifica a presentacion que hubo un error en el registro
         System.out.println("[ReceptorPaquete] Registro fallido: " + mensaje);
     }
 
