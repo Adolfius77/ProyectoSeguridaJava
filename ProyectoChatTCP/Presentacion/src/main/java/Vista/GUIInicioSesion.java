@@ -180,7 +180,7 @@ public class GUIInicioSesion extends javax.swing.JFrame {
     private void btnInicioSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioSesionActionPerformed
         // TODO add your handling code here:
         
-        controlador.iniciarSesion(nombreUsuario, contrasena);
+        //controlador.iniciarSesion(nombreUsuario, contrasena);
     }//GEN-LAST:event_btnInicioSesionActionPerformed
 
     /**
@@ -213,7 +213,7 @@ public class GUIInicioSesion extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GUIInicioSesion().setVisible(true);
+                //new GUIInicioSesion().setVisible(true);
             }
         });
     }

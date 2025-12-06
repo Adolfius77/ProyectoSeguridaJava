@@ -80,8 +80,6 @@ public class ReceptorServidor implements IReceptor {
         // Dirección inversa (regresar al cliente)
         resp.setHost(paquete.getHost());
         resp.setPuertoDestino(paquete.getPuertoOrigen());
-        resp.setPuertoOrigen(9999); // Puerto del servidor main
-
         servidor.enviarRespuesta(resp);
     }
 
@@ -111,7 +109,6 @@ public class ReceptorServidor implements IReceptor {
 
         resp.setHost(paquete.getHost());
         resp.setPuertoDestino(paquete.getPuertoOrigen());
-        resp.setPuertoOrigen(9999);
 
         servidor.enviarRespuesta(resp);
     }
