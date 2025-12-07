@@ -1,6 +1,7 @@
 package PublicadorEventos;
 
 import EventBus.EventBus;
+import Logs.Log;
 import org.itson.componentereceptor.IReceptor;
 import org.itson.paquetedto.PaqueteDTO;
 
@@ -22,13 +23,19 @@ public class PublicadorEventos implements IReceptor {
 
     @Override
     public void recibirCambio(PaqueteDTO paquete) {
-        if (paquete.getTipoEvento().equalsIgnoreCase("OBTENER_HOST")) {
-            eventBus.enviarHost(paquete);
-            return;
-        }
+        try {
+            if (paquete.getTipoEvento().equalsIgnoreCase("OBTENER_HOST")) {
+                eventBus.enviarHost(paquete);
+                return;
+            }
 
-        System.out.println("[PublicadorEventos] Evento recibido:" + paquete.getTipoEvento());
-        eventBus.publicarEvento(paquete);
+            System.out.println("[PublicadorEventos] Evento recibido:" + paquete.getTipoEvento());
+            eventBus.publicarEvento(paquete);
+
+        } catch (Exception e) {
+            Log.registrar("ERROR", "Error al procesar evento '" + paquete.getTipoEvento() + "': " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public int getPuerto() {

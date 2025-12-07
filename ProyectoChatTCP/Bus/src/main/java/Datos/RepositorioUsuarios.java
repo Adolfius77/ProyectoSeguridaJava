@@ -1,6 +1,7 @@
 package Datos;
 
 import Cifrado.GestorSeguridad;
+import Logs.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
@@ -25,9 +26,15 @@ public class RepositorioUsuarios {
             if (f.exists()) {
                 Type type = new TypeToken<HashMap<String, String>>(){}.getType();
                 usuarios = gson.fromJson(new FileReader(f), type);
+                // Log de exito
+                Log.registrar("INFO", "Base de datos cargada. Usuarios registrados: " + usuarios.size());
+            } else {
+                Log.registrar("WARNING", "No se encontró usuarios.json. Se creará uno nuevo.");
             }
         } catch (Exception e) {
-            System.err.println("Error cargando DB: " + e.getMessage());
+            // Log de error
+            Log.registrar("ERROR", "Fallo al cargar los datos: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -35,6 +42,7 @@ public class RepositorioUsuarios {
         try (FileWriter writer = new FileWriter(ARCHIVO)) {
             gson.toJson(usuarios, writer);
         } catch (Exception e) {
+            Log.registrar("ERROR", "No se pudo guardar el usuario en disco: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -42,12 +50,12 @@ public class RepositorioUsuarios {
     public static boolean registrar(String usuario, String password) {
         if (usuarios.containsKey(usuario)) return false;
         try {
-            // Guardar Hash, no texto plano
             String hash = GestorSeguridad.hashPassword(password);
             usuarios.put(usuario, hash);
             guardar();
             return true;
         } catch (Exception e) {
+            Log.registrar("ERROR", "Error al encriptar contraseña para " + usuario + ": " + e.getMessage());
             return false;
         }
     }
@@ -58,6 +66,7 @@ public class RepositorioUsuarios {
             String hashInput = GestorSeguridad.hashPassword(password);
             return usuarios.get(usuario).equals(hashInput);
         } catch (Exception e) {
+            Log.registrar("ERROR", "Error al validar al usuario: " + e.getMessage());
             return false;
         }
     }

@@ -1,6 +1,7 @@
 package EventBus;
 
 import Datos.RepositorioUsuarios;
+import Logs.Log;
 import Servicio.Servicio;
 import com.google.gson.internal.LinkedTreeMap;
 import java.util.ArrayList;
@@ -17,9 +18,12 @@ public class EventBus {
     private List<String> usuariosConectados;
     private IEmisor emisor;
 
+    private static final int MAX_USUARIOS = 5;
+
     public EventBus() {
         this.servicios = new ConcurrentHashMap<>();
         this.usuariosConectados = new ArrayList<>();
+        Log.registrar("INFO", "EventBus iniciado. Limite de usuarios configurado: " + MAX_USUARIOS);
     }
 
     public void setEmisor(IEmisor emisor) {
@@ -49,12 +53,14 @@ public class EventBus {
             Servicio nuevoServicio = new Servicio(paquete.getPuertoOrigen(), paquete.getHost());
             registrarServicio("MENSAJE", nuevoServicio); // Suscripción por defecto
             System.out.println("[EventBus] Cliente conectado: " + nuevoServicio);
+
+            Log.registrar("RED", "Cliente conectado físicamente: " + nuevoServicio);
             return;
 
         } else if (tipo.equals("SOLICITAR_USUARIOS")) {
             Servicio solicitante = new Servicio(paquete.getPuertoOrigen(), paquete.getHost());
             registrarServicio("LISTA_USUARIOS", solicitante);
-            
+
             enviarListaUsuarios();
             return;
 
@@ -62,8 +68,6 @@ public class EventBus {
 
         notificarServicios(paquete);
     }
-
-    
 
     private void enviarListaUsuarios() {
 
@@ -86,15 +90,32 @@ public class EventBus {
         String user = (String) data.get("nombreUsuario");
         String pass = (String) data.get("contrasena");
 
+        Log.registrar("INFO", "Solicitud de registro recibida para usuario: " + user);
+
         boolean exito = RepositorioUsuarios.registrar(user, pass);
-        enviarRespuesta(paquete, exito ? "REGISTRO_OK" : "ERROR",
-                exito ? "Registro exitoso" : "Usuario ya existe");
+
+        if (exito) {
+            Log.registrar("EXITO", "Usuario registrado correctamente: " + user);
+            enviarRespuesta(paquete, "REGISTRO_OK", "Registro exitoso");
+        } else {
+            Log.registrar("WARNING", "Fallo registro (Usuario ya existe): " + user);
+            enviarRespuesta(paquete, "ERROR", "Usuario ya existe");
+        }
     }
 
     private void procesarLogin(PaqueteDTO paquete) {
         LinkedTreeMap data = (LinkedTreeMap) paquete.getContenido();
         String user = (String) data.get("nombreUsuario");
         String pass = (String) data.get("contrasena");
+
+        Log.registrar("INFO", "Solicitud de login recibida para usuario: " + user);
+
+        if (usuariosConectados.size() >= MAX_USUARIOS && !usuariosConectados.contains(user)) {
+            Log.registrar("WARNING", "Login rechazado para " + user + ": Servidor lleno (" + usuariosConectados.size() + "/" + MAX_USUARIOS + ")");
+            enviarRespuesta(paquete, "ERROR", "El servidor está lleno (Máx 5 usuarios).");
+            return;
+        }
+        // ---------------------------------------
 
         if (RepositorioUsuarios.validar(user, pass)) {
             // Suscribir al usuario a los eventos de chat
@@ -106,11 +127,15 @@ public class EventBus {
 
             if (!usuariosConectados.contains(user)) {
                 usuariosConectados.add(user);
+                Log.registrar("EXITO", "Login correcto. Usuarios en línea: " + usuariosConectados.size());
+            } else {
+                Log.registrar("INFO", "Usuario " + user + " se ha reconectado.");
             }
 
             enviarRespuesta(paquete, "LOGIN_OK", user);
 
         } else {
+            Log.registrar("WARNING", "Login fallido (Credenciales incorrectas): " + user);
             enviarRespuesta(paquete, "ERROR", "Credenciales Incorrectas");
         }
     }

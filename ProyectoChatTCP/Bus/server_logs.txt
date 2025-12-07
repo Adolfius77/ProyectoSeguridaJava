@@ -1,0 +1,15 @@
+[2025-12-06 19:46:14] [INFO] EventBus iniciado. Límite de usuarios configurado: 5
+[2025-12-06 19:46:15] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-06 19:46:36] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-06 19:46:36] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-06 19:51:02] [INFO] Solicitud de login recibida para usuario: levi
+[2025-12-06 19:51:02] [INFO] Base de datos cargada. Usuarios registrados: 8
+[2025-12-06 19:51:02] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-06 19:51:40] [INFO] Solicitud de registro recibida para usuario: mittens
+[2025-12-06 19:51:40] [EXITO] Usuario registrado correctamente: mittens
+[2025-12-06 19:51:50] [INFO] Solicitud de login recibida para usuario: mittens
+[2025-12-06 19:51:50] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-06 19:53:49] [INFO] Solicitud de registro recibida para usuario: toñito
+[2025-12-06 19:53:49] [EXITO] Usuario registrado correctamente: toñito
+[2025-12-06 19:53:58] [INFO] Solicitud de login recibida para usuario: toñito
+[2025-12-06 19:53:58] [EXITO] Login correcto. Usuarios en línea: 3

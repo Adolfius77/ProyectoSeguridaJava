@@ -4,6 +4,7 @@ import Emisor.ClienteTCP;
 import Emisor.ColaEnvios;
 import Emisor.Emisor;
 import EventBus.EventBus;
+import Logs.Log;
 import PublicadorEventos.PublicadorEventos;
 import Receptor.ColaRecibos;
 import Receptor.Receptor;
@@ -43,26 +44,31 @@ public class EnsambladorBus {
     }
 
     public void iniciar() {
+
         eventBus = new EventBus();
 
-        // emisor del bus
         ColaEnvios colaEnviosBus = new ColaEnvios();
         ClienteTCP clienteTCPBus = new ClienteTCP(colaEnviosBus, puertoBus, host);
+        clienteTCPBus.setCifradoHabilitado(true);
+
         colaEnviosBus.agregarObservador(clienteTCPBus);
         emisorBus = new Emisor(colaEnviosBus);
         eventBus.setEmisor(emisorBus);
 
-        // receptor
         ColaRecibos colaRecibosBus = new ColaRecibos();
         ServidorTCP servidorTCPBus = new ServidorTCP(colaRecibosBus, puertoEntrada);
+        servidorTCPBus.setCifradoHabilitado(true);
+
         IReceptor publicador = new PublicadorEventos(puertoBus, host, eventBus);
+
         Receptor receptorBus = new Receptor();
         receptorBus.setCola(colaRecibosBus);
         receptorBus.setReceptor(publicador);
         colaRecibosBus.agregarObservador(receptorBus);
 
         new Thread(() -> servidorTCPBus.iniciar()).start();
-        System.out.println("[EventBus] Servicio iniciado en puerto " + puertoEntrada);
+
+        Log.registrar("INFO", "Servicio EventBus iniciado correctamente en puerto " + puertoEntrada);
     }
 
     public static void main(String[] args) {
@@ -70,7 +76,11 @@ public class EnsambladorBus {
             EnsambladorBus ensamblador = new EnsambladorBus("config_bus.properties");
             ensamblador.iniciar();
         } catch (IOException e) {
-            System.err.println("Error al iniciar el EventBus: " + e.getMessage());
+            // Log de error
+            Log.registrar("ERROR", "El servidor no pudo iniciar: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            Log.registrar("ERROR", "Error inesperado: " + e.getMessage());
             e.printStackTrace();
         }
     }
