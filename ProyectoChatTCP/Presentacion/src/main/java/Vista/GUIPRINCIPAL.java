@@ -90,15 +90,18 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(5, 19, 25));
+        jPanel1.setBackground(new java.awt.Color(0, 102, 153));
 
-        jPanel2.setBackground(new java.awt.Color(5, 19, 25));
+        jPanel2.setBackground(new java.awt.Color(156, 227, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
 
         jLabel1.setFont(new java.awt.Font("SansSerif", 1, 20)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setForeground(new java.awt.Color(0, 51, 153));
         jLabel1.setText("Usuarios Conectados");
 
+        btnChatGlobal.setBackground(new java.awt.Color(102, 153, 255));
+        btnChatGlobal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnChatGlobal.setForeground(new java.awt.Color(255, 255, 255));
         btnChatGlobal.setText("Chat Global");
         btnChatGlobal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,7 +161,7 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 18, Short.MAX_VALUE))
+                .addGap(0, 17, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

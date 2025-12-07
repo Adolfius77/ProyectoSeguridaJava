@@ -31,7 +31,7 @@ public class FormMensajeChat extends javax.swing.JPanel {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        Mensaje.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        Mensaje.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         Mensaje.setText("Mensaje");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

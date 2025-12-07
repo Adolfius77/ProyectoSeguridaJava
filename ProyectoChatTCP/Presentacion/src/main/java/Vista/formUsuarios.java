@@ -69,6 +69,7 @@ public class formUsuarios extends javax.swing.JPanel {
         jLabel1.setText("jLabel1");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         javax.swing.GroupLayout fotoPerfilLayout = new javax.swing.GroupLayout(fotoPerfil);
         fotoPerfil.setLayout(fotoPerfilLayout);
@@ -81,8 +82,12 @@ public class formUsuarios extends javax.swing.JPanel {
             .addGap(0, 80, Short.MAX_VALUE)
         );
 
+        lblNombre.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         lblNombre.setText("Nombre usuario");
 
+        btnMensaje.setBackground(new java.awt.Color(102, 153, 255));
+        btnMensaje.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btnMensaje.setForeground(new java.awt.Color(255, 255, 255));
         btnMensaje.setText("Mensaje");
         btnMensaje.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,7 +104,7 @@ public class formUsuarios extends javax.swing.JPanel {
                 .addComponent(fotoPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblNombre)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 166, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 141, Short.MAX_VALUE)
                 .addComponent(btnMensaje)
                 .addGap(19, 19, 19))
         );
@@ -111,7 +116,7 @@ public class formUsuarios extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(fotoPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
+                        .addGap(37, 37, 37)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lblNombre)
                             .addComponent(btnMensaje))))

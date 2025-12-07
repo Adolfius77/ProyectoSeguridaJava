@@ -63,7 +63,7 @@ public class GUIChatGlobal extends javax.swing.JFrame implements Observador.INot
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(5, 19, 25));
+        jPanel1.setBackground(new java.awt.Color(0, 102, 153));
 
         panelDinamico.setBackground(new java.awt.Color(228, 255, 255));
 
@@ -71,7 +71,7 @@ public class GUIChatGlobal extends javax.swing.JFrame implements Observador.INot
         panelDinamico.setLayout(panelDinamicoLayout);
         panelDinamicoLayout.setHorizontalGroup(
             panelDinamicoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 629, Short.MAX_VALUE)
+            .addGap(0, 643, Short.MAX_VALUE)
         );
         panelDinamicoLayout.setVerticalGroup(
             panelDinamicoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -80,9 +80,9 @@ public class GUIChatGlobal extends javax.swing.JFrame implements Observador.INot
 
         jScrollPane1.setViewportView(panelDinamico);
 
-        txtMensaje.setBackground(new java.awt.Color(255, 255, 255));
-
+        btnEnviarMensaje.setBackground(new java.awt.Color(102, 153, 255));
         btnEnviarMensaje.setFont(new java.awt.Font("SansSerif", 1, 15)); // NOI18N
+        btnEnviarMensaje.setForeground(new java.awt.Color(255, 255, 255));
         btnEnviarMensaje.setText("Enviar mensaje");
         btnEnviarMensaje.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -90,11 +90,13 @@ public class GUIChatGlobal extends javax.swing.JFrame implements Observador.INot
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 15)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 20)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("CHAT GLOBLAL");
+        jLabel1.setText("Chat Global");
 
+        btnVolver.setBackground(new java.awt.Color(102, 153, 255));
         btnVolver.setFont(new java.awt.Font("SansSerif", 1, 15)); // NOI18N
+        btnVolver.setForeground(new java.awt.Color(255, 255, 255));
         btnVolver.setText("Volver");
         btnVolver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -110,14 +112,15 @@ public class GUIChatGlobal extends javax.swing.JFrame implements Observador.INot
                 .addGap(33, 33, 33)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnVolver))
                     .addComponent(jScrollPane1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(txtMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 488, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnEnviarMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(btnEnviarMensaje, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(33, 33, 33))
         );
         jPanel1Layout.setVerticalGroup(
@@ -133,7 +136,7 @@ public class GUIChatGlobal extends javax.swing.JFrame implements Observador.INot
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnEnviarMensaje, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
                     .addComponent(txtMensaje))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
