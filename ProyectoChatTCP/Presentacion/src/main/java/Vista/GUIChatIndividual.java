@@ -6,6 +6,8 @@ package Vista;
 
 import Controlador.Controlador;
 import ObjetoPresentacion.UsuarioOP;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  *
@@ -167,8 +169,10 @@ public class GUIChatIndividual extends javax.swing.JFrame implements Observador.
         if (texto.trim().isEmpty()) {
             return;
         }
+        
         controlador.enviarMensajePrivado(destinatario, texto);
-        agregarMensajeVisual("yo: " + texto);
+        String fechaHora = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        agregarMensajeVisual("yo: " + texto + "[" + fechaHora + "]" );
         txtMensajeIndividual.setText("");
     }//GEN-LAST:event_btnEnviarMensajeIndividualActionPerformed
 

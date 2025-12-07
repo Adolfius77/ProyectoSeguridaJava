@@ -35,7 +35,7 @@ public class Controlador implements IControlador {
 
     @Override
     public void enviarMensajeGrupal(String contenido) {
-        // Implementar envío a todos
+        modelo.enviarMensajeGrupal(contenido);
     }
 
     @Override

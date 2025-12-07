@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.time.format.DateTimeFormatter;
 
 public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
 
@@ -49,9 +50,8 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
         }
     }
 
-   
     public void registrar(String usuario, String password) {
-        conectar(); 
+        conectar();
 
         UsuarioDTO dto = new UsuarioDTO();
         dto.setNombreUsuario(usuario);
@@ -91,7 +91,8 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
 
         enviarPaquete("MENSAJE", msj);
     }
-    private void enviarMensajeGlobal(String texto){
+
+    public void enviarMensajeGlobal(String texto) {
         MensajeDTO msjGlobal = new MensajeDTO(
                 usuarioActual != null ? usuarioActual.getNombre() : "Anonimo",
                 texto,
@@ -119,7 +120,7 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
     @Override
     public void recibirCambio(PaqueteDTO paquete) {
         String tipo = paquete.getTipoEvento();
-
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         if (tipo.equals("MENSAJE")) {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
@@ -127,19 +128,22 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
             String json = gson.toJson(paquete.getContenido());
             MensajeDTO msjDTO = gson.fromJson(json, MensajeDTO.class);
 
-            String infoMensaje = msjDTO.getNombreUsuario() + ":" + msjDTO.getContenidoMensaje();
+            String hora = msjDTO.getFechaHora().format(timeFormatter);
+            String infoMensaje = msjDTO.getNombreUsuario() + ":" + msjDTO.getContenidoMensaje() + "[" + hora + "]";
             UsuarioOP notificacion = new UsuarioOP(0, "MENSAJE", infoMensaje, "", 0);
             notificar(notificacion);
             return;
         }
-        if(tipo.equals("CHAT_GRUPAL")){
+        if (tipo.equals("CHAT_GRUPAL")) {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(LocalDateTime.class, new Util.LocalDateTimeAdapter())
                     .create();
+                    
             String json = gson.toJson(paquete.getContenido());
             MensajeDTO msjDTO = gson.fromJson(json, MensajeDTO.class);
             
-            String infoMensaje = msjDTO.getNombreUsuario() + ":" + msjDTO.getContenidoMensaje();
+            String hora = msjDTO.getFechaHora().format(timeFormatter);
+            String infoMensaje = msjDTO.getNombreUsuario() + ":" + msjDTO.getContenidoMensaje()+ "[" + hora + "]";
             UsuarioOP notificacion = new UsuarioOP(0, "CHAT_GRUPAL", infoMensaje, "", 0);
             notificar(notificacion);
             return;
@@ -175,5 +179,5 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
             obs.actualizar(usuarioOP);
         }
     }
-    
+
 }
