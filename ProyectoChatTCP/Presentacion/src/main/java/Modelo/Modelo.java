@@ -32,7 +32,7 @@ public class Modelo implements IModeloEscritura, IPublicadorNuevoMensaje {
     @Override public void mostrarChatFrame(UsuarioOP usuarioOP) {}
     @Override public void mostrarChatGrupal() {}
     @Override public void enviarMensajePrivado(UsuarioOP usuarioDestino, String contenido) {}
-    @Override public void enviarMensajeGrupal(String contenido) {}
+   
 
     // Delegar patrón Observer a la lógica
     @Override
@@ -48,4 +48,8 @@ public class Modelo implements IModeloEscritura, IPublicadorNuevoMensaje {
     public void solicitarUsuarios(){
         logicaCliente.solicitarListaUsuarios();
     }
+     @Override 
+     public void enviarMensajeGrupal(String contenido) {
+         logicaCliente.enviarMensajeGlobal(contenido);
+     }
 }

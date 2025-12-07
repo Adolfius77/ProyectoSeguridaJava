@@ -91,7 +91,7 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
 
         enviarPaquete("MENSAJE", msj);
     }
-    private void enviarMensajeGlobal(String texto){
+    public void enviarMensajeGlobal(String texto){
         MensajeDTO msjGlobal = new MensajeDTO(
                 usuarioActual != null ? usuarioActual.getNombre() : "Anonimo",
                 texto,
