@@ -172,7 +172,7 @@ public class GUIChatIndividual extends javax.swing.JFrame implements Observador.
         
         controlador.enviarMensajePrivado(destinatario, texto);
         String fechaHora = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
-        agregarMensajeVisual("yo: " + texto + "[" + fechaHora + "]" );
+        agregarMensajeVisual("yo: " + texto + "\n"+ "[" + fechaHora + "]" );
         txtMensajeIndividual.setText("");
     }//GEN-LAST:event_btnEnviarMensajeIndividualActionPerformed
 
