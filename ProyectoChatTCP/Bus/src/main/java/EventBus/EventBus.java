@@ -102,6 +102,7 @@ public class EventBus {
 
             registrarServicio("MENSAJE", s);
             registrarServicio("LISTA_USUARIOS", s);
+            registrarServicio("CHAT_GRUPAL", s);
 
             if (!usuariosConectados.contains(user)) {
                 usuariosConectados.add(user);

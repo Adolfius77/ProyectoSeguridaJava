@@ -29,4 +29,6 @@ public interface IControlador {
     void pedirListaUsuarios();
 
     void agregarObservador(INotificadorNuevoMensaje observador);
+    
+    
 }
