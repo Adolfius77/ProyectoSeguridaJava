@@ -17,13 +17,15 @@ public class formUsuarios extends javax.swing.JPanel {
      * Creates new form formUsuarios
      */
     private String nombreUsuario;
+    private String miNombre;
     private Controlador controlador;
 
     public formUsuarios() {
         initComponents();
     }
 
-    public formUsuarios(String nombreUsuario, Controlador controlador) {
+    public formUsuarios(String nombreUsuario, Controlador controlador,String miNombre) {
+        this.miNombre = miNombre;
         this.nombreUsuario = nombreUsuario;
         this.controlador = controlador;
         initComponents();
@@ -36,8 +38,9 @@ public class formUsuarios extends javax.swing.JPanel {
 
     private void abrirChat() {
         UsuarioOP destinatario = new UsuarioOP(0, nombreUsuario, "En línea", "", 0);
-        GUIChatIndividual chat = new GUIChatIndividual(destinatario, controlador);
+        GUIChatIndividual chat = new GUIChatIndividual(destinatario, controlador,miNombre);
         chat.setVisible(true);
+        javax.swing.SwingUtilities.getWindowAncestor(this).dispose();
         
         
     }
