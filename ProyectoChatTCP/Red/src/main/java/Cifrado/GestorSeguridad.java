@@ -5,12 +5,9 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.ByteBuffer;
 import java.security.*;
 import java.security.spec.*;
-import java.util.Arrays;
 
 public class GestorSeguridad {
 
@@ -41,7 +38,7 @@ public class GestorSeguridad {
         }
     }
 
-    // --- CIFRADO HÍBRIDO (Mensaje -> AES -> RSA) ---
+ 
     public byte[] cifrar(String mensaje, PublicKey llaveDestino) throws Exception {
         // 1. Generar llave AES temporal
         KeyGenerator keyGen = KeyGenerator.getInstance("AES");
@@ -60,28 +57,42 @@ public class GestorSeguridad {
         rsa.init(Cipher.ENCRYPT_MODE, llaveDestino);
         byte[] aesKeyCifrada = rsa.doFinal(aesKey.getEncoded());
 
-        // 4. Empaquetar todo: [AES_Key_Enc | IV | Msg_Enc]
-        byte[] separador = ":::".getBytes();
-        return concat(aesKeyCifrada, separador, iv, separador, mensajeCifrado);
+        ByteBuffer buffer = ByteBuffer.allocate(4 + aesKeyCifrada.length + 4 + iv.length + mensajeCifrado.length);
+        
+        buffer.putInt(aesKeyCifrada.length);
+        buffer.put(aesKeyCifrada);
+        
+        buffer.putInt(iv.length);
+        buffer.put(iv);
+        
+        buffer.put(mensajeCifrado);
+        
+        return buffer.array();
     }
 
     // --- DESCIFRADO HÍBRIDO ---
     public String descifrar(byte[] paquete) {
         try {
-            byte[][] partes = split(paquete, ":::".getBytes(), 3);
-            if (partes == null) return null;
+            ByteBuffer buffer = ByteBuffer.wrap(paquete);
 
-            byte[] aesKeyCifrada = partes[0];
-            byte[] iv = partes[1];
-            byte[] datosCifrados = partes[2];
+            int keyLength = buffer.getInt();
+            if (keyLength < 0 || keyLength > 1024) throw new IllegalArgumentException("Longitud de llave invalida");
+            byte[] aesKeyCifrada = new byte[keyLength];
+            buffer.get(aesKeyCifrada);
 
-            // 1. Descifrar llave AES con mi llave Privada RSA
+            int ivLength = buffer.getInt();
+            if (ivLength != 12) throw new IllegalArgumentException("IV invalido");
+            byte[] iv = new byte[ivLength];
+            buffer.get(iv);
+
+            byte[] datosCifrados = new byte[buffer.remaining()];
+            buffer.get(datosCifrados);
+
             Cipher rsa = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
             rsa.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] aesKeyBytes = rsa.doFinal(aesKeyCifrada);
             SecretKey aesKey = new SecretKeySpec(aesKeyBytes, "AES");
 
-            // 2. Descifrar mensaje con AES
             Cipher aesCipher = Cipher.getInstance("AES/GCM/NoPadding");
             aesCipher.init(Cipher.DECRYPT_MODE, aesKey, new GCMParameterSpec(128, iv));
             
@@ -89,6 +100,7 @@ public class GestorSeguridad {
 
         } catch (Exception e) {
             System.err.println("[Seguridad] Fallo al descifrar: " + e.getMessage());
+            e.printStackTrace(); 
             return null;
         }
     }
@@ -99,41 +111,5 @@ public class GestorSeguridad {
         StringBuilder sb = new StringBuilder();
         for (byte b : hash) sb.append(String.format("%02x", b));
         return sb.toString();
-    }
-
-    // --- Utilidades de Bytes ---
-    private static byte[] concat(byte[]... arrays) {
-        int len = 0;
-        for (byte[] a : arrays) len += a.length;
-        byte[] result = new byte[len];
-        int pos = 0;
-        for (byte[] a : arrays) {
-            System.arraycopy(a, 0, result, pos, a.length);
-            pos += a.length;
-        }
-        return result;
-    }
-
-    private static byte[][] split(byte[] data, byte[] separator, int parts) {
-        // Implementación simplificada de split binario
-        // NOTA: Para producción, usar una librería robusta o esta implementación manual con cuidado
-        try {
-            byte[][] result = new byte[parts][];
-            int partIdx = 0;
-            int start = 0;
-            for (int i = 0; i < data.length - separator.length + 1 && partIdx < parts - 1; i++) {
-                boolean match = true;
-                for (int j = 0; j < separator.length; j++) {
-                    if (data[i + j] != separator[j]) { match = false; break; }
-                }
-                if (match) {
-                    result[partIdx++] = Arrays.copyOfRange(data, start, i);
-                    i += separator.length - 1;
-                    start = i + 1;
-                }
-            }
-            result[partIdx] = Arrays.copyOfRange(data, start, data.length);
-            return result;
-        } catch (Exception e) { return null; }
     }
 }
