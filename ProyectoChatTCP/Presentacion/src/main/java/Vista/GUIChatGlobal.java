@@ -156,7 +156,9 @@ public class GUIChatGlobal extends javax.swing.JFrame implements Observador.INot
            return;
        }
        controlador.enviarMensajeGrupal(texto);
-       agregarMensajeVisual("yo:" + texto);
+               String fechaHora = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+
+       agregarMensajeVisual("yo:" + texto + "[" + fechaHora + "]");
        txtMensaje.setText("");
     }//GEN-LAST:event_btnEnviarMensajeActionPerformed
 
