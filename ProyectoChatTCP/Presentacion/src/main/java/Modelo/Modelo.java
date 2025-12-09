@@ -52,4 +52,13 @@ public class Modelo implements IModeloEscritura, IPublicadorNuevoMensaje {
      public void enviarMensajeGrupal(String contenido) {
          logicaCliente.enviarMensajeGlobal(contenido);
      }
+    @Override
+     public void cerrarSesion(){
+         logicaCliente.logout();
+     }
+     
+    @Override
+    public int getCantidadUsuariosConectados(){
+        return logicaCliente.getTotalUsuariosConectados();
+    }
 }

@@ -30,5 +30,7 @@ public interface IControlador {
 
     void agregarObservador(INotificadorNuevoMensaje observador);
     
+    void cerrarSesion();
     
+    int getCantidadUsuariosConectados();
 }

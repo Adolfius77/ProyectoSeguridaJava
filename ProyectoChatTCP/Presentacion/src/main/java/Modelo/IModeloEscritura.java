@@ -31,5 +31,8 @@ public interface IModeloEscritura {
     
     void agregarObservador(INotificadorNuevoMensaje observador);
     
+    void cerrarSesion();
+    
+    int getCantidadUsuariosConectados();
 
 }

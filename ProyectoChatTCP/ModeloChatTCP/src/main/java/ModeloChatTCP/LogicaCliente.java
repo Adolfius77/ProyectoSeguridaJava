@@ -26,7 +26,7 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
     private EnsambladorRed ensamblador;
     private List<INotificadorNuevoMensaje> observadores = new ArrayList<>();
     private UsuarioOP usuarioActual;
-
+    private int totalUsuariosConectados = 0;
     private LogicaCliente() {
         // Obtenemos la instancia del Ensamblador que vive en el módulo Red
         this.ensamblador = EnsambladorRed.getInstancia();
@@ -157,6 +157,17 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
             this.usuarioActual = new UsuarioOP(0, contenido, "", "", 0);
         }
         if (tipo.equals("LISTA_USUARIOS")) {
+            String listaStr = contenido.toString();
+          
+            if (listaStr.length() > 2) { 
+                String[] usuarios = listaStr.substring(1, listaStr.length() - 1).split(",\\s*");
+                this.totalUsuariosConectados = usuarios.length;
+            } else {
+                this.totalUsuariosConectados = 0;
+            }
+            
+            System.out.println("[Cliente] Total usuarios: " + this.totalUsuariosConectados); // Debug
+
             UsuarioOP notificacion = new UsuarioOP(0, "LISTA_USUARIOS", contenido, "", 0);
             notificar(notificacion);
             return;
@@ -179,5 +190,17 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
             obs.actualizar(usuarioOP);
         }
     }
+    public void logout(){
+        if(usuarioActual != null){
+            System.out.println("[logicaCliente mano] cerrando sesion de: " + usuarioActual.getNombre());
+            enviarPaquete("LOGOUT", usuarioActual.getNombre());
+            
+            this.usuarioActual = null;
+        }
+    }
 
+    public int getTotalUsuariosConectados() {
+        return this.totalUsuariosConectados;
+    }
+    
 }

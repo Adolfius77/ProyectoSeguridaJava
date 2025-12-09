@@ -63,12 +63,28 @@ public class EventBus {
 
             enviarListaUsuarios();
             return;
-
+            
+        }else if(tipo.equals("LOGOUT")){
+            procesarRegistro(paquete);
+            return;
         }
 
         notificarServicios(paquete);
     }
 
+    private void procesarLogout(PaqueteDTO paquete){
+        String user = (String) paquete.getContenido();
+        if(usuariosConectados.remove(user)){
+            Log.registrar("INFO", "Usuario desconectado" + user);
+            Log.registrar("INFO", "cupos disponibles" + (MAX_USUARIOS - usuariosConectados.size()));
+            enviarListaUsuarios();
+        }
+    }
+    public int getCantidadUsuariosConectados() {
+        return usuariosConectados.size();
+    }
+    
+    
     private void enviarListaUsuarios() {
 
         PaqueteDTO paqueteLista = new PaqueteDTO();
@@ -84,7 +100,9 @@ public class EventBus {
             }
         }
     }
-
+    private void numUsuariosConectados(){
+        usuariosConectados.size();
+    }
     private void procesarRegistro(PaqueteDTO paquete) {
         LinkedTreeMap data = (LinkedTreeMap) paquete.getContenido();
         String user = (String) data.get("nombreUsuario");
@@ -178,7 +196,7 @@ public class EventBus {
             }
         }
     }
-
+    
     // Método necesario para compilación si lo usas en PublicadorEventos
     public void enviarHost(PaqueteDTO p) {
     }

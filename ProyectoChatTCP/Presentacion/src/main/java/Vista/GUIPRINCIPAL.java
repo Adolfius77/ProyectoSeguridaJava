@@ -22,10 +22,11 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
     private Modelo modelo;
     private String usurioLogueado;
     
+    
+    
     public GUIPRINCIPAL(String usurioLogueado) {
         this.usurioLogueado = usurioLogueado;
         initComponents();
-        
         this.modelo = new Modelo();
         this.modelo.agregarObservador(this);
         this.controlador = new Controlador(modelo);
@@ -39,10 +40,13 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
         
     }
     
+    
     private void configurarVentana(){
         this.setTitle("sistema de chat seguro");
         this.setLocationRelativeTo(null);
+        lblNumeroDeUsuarios.setText(String.valueOf(totalUsuaios));
         panelDinamico.setLayout(new BoxLayout(panelDinamico,BoxLayout.Y_AXIS));
+        
          
     }
     public void actualizarListaUsuarios(List<String> nombres) {
@@ -85,6 +89,8 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         btnChatGlobal = new javax.swing.JButton();
+        lblNumeroDeUsuarios = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         panelDinamico = new javax.swing.JPanel();
 
@@ -97,7 +103,7 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
 
         jLabel1.setFont(new java.awt.Font("SansSerif", 1, 20)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 51, 153));
-        jLabel1.setText("Usuarios Conectados");
+        jLabel1.setText("Usuarios Conectados:");
 
         btnChatGlobal.setBackground(new java.awt.Color(102, 153, 255));
         btnChatGlobal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -109,16 +115,28 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
             }
         });
 
+        lblNumeroDeUsuarios.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        lblNumeroDeUsuarios.setText("jLabel2");
+
+        jButton1.setText("Cerrar sesion");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnChatGlobal)
-                .addGap(15, 15, 15))
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnChatGlobal)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblNumeroDeUsuarios)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -126,8 +144,11 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
                 .addGap(27, 27, 27)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(btnChatGlobal))
-                .addContainerGap(57, Short.MAX_VALUE))
+                    .addComponent(lblNumeroDeUsuarios)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnChatGlobal)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
 
         panelDinamico.setBackground(new java.awt.Color(255, 255, 255));
@@ -161,7 +182,7 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 439, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 17, Short.MAX_VALUE))
+                .addGap(0, 15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -221,10 +242,12 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnChatGlobal;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblNumeroDeUsuarios;
     private javax.swing.JPanel panelDinamico;
     // End of variables declaration//GEN-END:variables
 

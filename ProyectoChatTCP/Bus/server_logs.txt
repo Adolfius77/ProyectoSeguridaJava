@@ -20,3 +20,8 @@
 [2025-12-06 20:35:03] [EXITO] Login correcto. Usuarios en línea: 1
 [2025-12-06 20:36:38] [INFO] Solicitud de login recibida para usuario: pepe
 [2025-12-06 20:36:38] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 00:45:18] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 00:45:19] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 00:45:37] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 00:45:37] [INFO] Base de datos cargada. Usuarios registrados: 10
+[2025-12-09 00:45:37] [EXITO] Login correcto. Usuarios en línea: 1

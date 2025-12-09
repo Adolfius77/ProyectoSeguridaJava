@@ -51,5 +51,12 @@ public class Controlador implements IControlador {
     public void agregarObservador(INotificadorNuevoMensaje observador) {
         modelo.agregarObservador(observador);
     }
-    
+    @Override
+    public void cerrarSesion(){
+        modelo.cerrarSesion();
+    }
+    @Override
+    public int getCantidadUsuariosConectados(){
+        return modelo.getCantidadUsuariosConectados();
+    }
 }
