@@ -106,7 +106,14 @@ public class LogicaCliente implements IReceptor, IPublicadorNuevoMensaje {
         PaqueteDTO paquete = new PaqueteDTO();
         paquete.setTipoEvento(tipo);
         paquete.setContenido(contenido);
-        paquete.setHost("localhost");
+        try{
+            paquete.setHost(java.net.InetAddress.getLocalHost().getHostAddress());
+            
+        }catch(Exception e){
+            paquete.setHost("localhost");
+        }
+        
+        
         paquete.setPuertoOrigen(ensamblador.getPuertoEscucha());
         paquete.setPuertoDestino(5555);
 

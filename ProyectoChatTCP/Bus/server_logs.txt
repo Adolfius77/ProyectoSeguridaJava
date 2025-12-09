@@ -176,3 +176,55 @@
 [2025-12-09 02:30:35] [INFO] cupos disponibles4
 [2025-12-09 02:30:38] [INFO] Usuario desconectadoclaudia
 [2025-12-09 02:30:38] [INFO] cupos disponibles5
+[2025-12-09 13:50:00] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 13:50:00] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 13:50:45] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 13:50:45] [INFO] Base de datos cargada. Usuarios registrados: 14
+[2025-12-09 13:50:45] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 13:51:11] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 13:51:11] [WARNING] Login fallido (Credenciales incorrectas): pepe
+[2025-12-09 13:51:21] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 13:51:21] [WARNING] Login fallido (Credenciales incorrectas): pepe
+[2025-12-09 13:51:31] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 13:51:31] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 14:05:53] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 14:05:54] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 14:06:28] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 14:06:28] [INFO] Base de datos cargada. Usuarios registrados: 14
+[2025-12-09 14:06:28] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 14:06:56] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 14:06:56] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 14:12:55] [INFO] Usuario desconectadopepe
+[2025-12-09 14:12:55] [INFO] cupos disponibles4
+[2025-12-09 14:13:00] [INFO] Usuario desconectadopixi
+[2025-12-09 14:13:00] [INFO] cupos disponibles5
+[2025-12-09 14:14:22] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 14:14:23] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 14:14:43] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 14:14:44] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 14:17:52] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 14:17:53] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 14:19:21] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 14:19:22] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 14:19:38] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 14:19:39] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 14:24:00] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 14:24:01] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 14:26:41] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 14:26:42] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 14:27:08] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 14:27:08] [INFO] Base de datos cargada. Usuarios registrados: 14
+[2025-12-09 14:27:08] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 14:27:30] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 14:27:30] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 14:42:13] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 14:42:13] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 14:42:38] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 14:42:38] [INFO] Base de datos cargada. Usuarios registrados: 14
+[2025-12-09 14:42:38] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 14:43:02] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 14:43:02] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 15:04:52] [INFO] Usuario desconectadopixi
+[2025-12-09 15:04:52] [INFO] cupos disponibles4
+[2025-12-09 15:04:58] [INFO] Usuario desconectadopepe
+[2025-12-09 15:04:58] [INFO] cupos disponibles5

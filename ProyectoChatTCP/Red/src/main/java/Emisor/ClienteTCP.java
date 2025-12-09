@@ -14,9 +14,9 @@ public class ClienteTCP implements ObservadorEnvios {
 
     private ColaEnvios cola;
     // Valores por defecto si no vienen en el paquete
-    private int puertoDefault; 
+    private int puertoDefault;
     private String hostDefault;
-    
+
     private GestorSeguridad gestorSeguridad;
     private boolean cifradoHabilitado = false;
 
@@ -27,25 +27,34 @@ public class ClienteTCP implements ObservadorEnvios {
         try {
             this.gestorSeguridad = new GestorSeguridad();
             this.cifradoHabilitado = true;
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void setCifradoHabilitado(boolean b) { this.cifradoHabilitado = b; }
+    public void setCifradoHabilitado(boolean b) {
+        this.cifradoHabilitado = b;
+    }
 
     @Override
     public void actualizar() {
-        // Desencolar mensaje (JSON String)
-        String json = cola.dequeue(); 
-        if (json == null) return;
+        String json = cola.dequeue();
+        if (json == null) {
+            return;
+        }
 
         try {
-            // Analizar JSON para ver si trae destino específico
             JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
-            
-            // Usar destino del paquete, o el default si no trae
-            String host = obj.has("host") ? obj.get("host").getAsString() : hostDefault;
-            int puerto = obj.has("puertoDestino") && obj.get("puertoDestino").getAsInt() > 0 
-                         ? obj.get("puertoDestino").getAsInt() : puertoDefault;
+
+            int puerto = obj.has("puertoDestino") && obj.get("puertoDestino").getAsInt() > 0
+                    ? obj.get("puertoDestino").getAsInt() : puertoDefault;
+
+            String host;
+            if (puerto == 5555) {
+                host = hostDefault;
+            } else {
+                host = obj.has("host") ? obj.get("host").getAsString() : hostDefault;
+            }
 
             enviar(json, host, puerto);
         } catch (Exception e) {
@@ -54,9 +63,7 @@ public class ClienteTCP implements ObservadorEnvios {
     }
 
     private void enviar(String mensaje, String host, int puerto) {
-        try (Socket socket = new Socket(host, puerto);
-             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-             DataInputStream in = new DataInputStream(socket.getInputStream())) {
+        try (Socket socket = new Socket(host, puerto); DataOutputStream out = new DataOutputStream(socket.getOutputStream()); DataInputStream in = new DataInputStream(socket.getInputStream())) {
 
             if (cifradoHabilitado) {
                 // PASO 1: Recibir llave pública del Servidor
@@ -76,7 +83,7 @@ public class ClienteTCP implements ObservadorEnvios {
                 out.writeInt(cifrado.length);
                 out.write(cifrado);
                 out.flush();
-                
+
                 System.out.println("[ClienteTCP] Enviado cifrado a " + host + ":" + puerto);
             } else {
                 byte[] b = mensaje.getBytes();
