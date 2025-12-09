@@ -218,13 +218,13 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
     private void cerrarSesion(){
         try{
             controlador.cerrarSesion();
+            Thread.sleep(100);
             GUIInicioSesion inicio = new GUIInicioSesion();
             inicio.setVisible(true);
             this.dispose();
+    
         }catch(Exception e){
-            System.out.println("error al cerrar sesion" + e.getMessage());
-        }finally{
-            System.exit(0);
+            System.out.println("error al cerrar sesion: " + e.getMessage());
         }
         
     }

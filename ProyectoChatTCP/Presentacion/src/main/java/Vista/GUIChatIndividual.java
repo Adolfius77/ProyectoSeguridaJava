@@ -23,7 +23,7 @@ public class GUIChatIndividual extends javax.swing.JFrame implements Observador.
         initComponents();
         setLocationRelativeTo(null);
     }
-
+    
     public GUIChatIndividual(UsuarioOP destinatario, Controlador controlador, String miNombre) {
         this.miNombre = miNombre;
         this.destinatario = destinatario;
@@ -35,6 +35,14 @@ public class GUIChatIndividual extends javax.swing.JFrame implements Observador.
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.Y_AXIS));
         controlador.agregarObservador(this);
         setLocationRelativeTo(null);
+        
+        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                cerrarSesion();
+            }
+        });
     }
 
     private void agregarMensajeVisual(String texto) {
@@ -49,8 +57,21 @@ public class GUIChatIndividual extends javax.swing.JFrame implements Observador.
         // Bajar el scroll automáticamente
         javax.swing.JScrollBar vertical = jScrollPane1.getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
+        
     }
-
+    private void cerrarSesion(){
+        try{
+            controlador.cerrarSesion();
+            Thread.sleep(100);
+            GUIInicioSesion inicio = new GUIInicioSesion();
+            inicio.setVisible(true);
+            this.dispose();
+    
+        }catch(Exception e){
+            System.out.println("error al cerrar sesion: " + e.getMessage());
+        }
+        
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

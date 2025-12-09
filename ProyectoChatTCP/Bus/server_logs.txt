@@ -44,3 +44,83 @@
 [2025-12-09 01:08:30] [ERROR] Error al procesar evento 'LOGOUT': class java.lang.String cannot be cast to class com.google.gson.internal.LinkedTreeMap (java.lang.String is in module java.base of loader 'bootstrap'; com.google.gson.internal.LinkedTreeMap is in unnamed module of loader 'app')
 [2025-12-09 01:08:47] [INFO] Solicitud de login recibida para usuario: pixi
 [2025-12-09 01:08:47] [INFO] Usuario pixi se ha reconectado.
+[2025-12-09 01:16:31] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 01:16:32] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 01:16:56] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:16:56] [INFO] Base de datos cargada. Usuarios registrados: 10
+[2025-12-09 01:16:56] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 01:17:32] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 01:17:32] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 01:17:43] [INFO] Usuario desconectadopixi
+[2025-12-09 01:17:43] [INFO] cupos disponibles4
+[2025-12-09 01:17:50] [INFO] Usuario desconectadopepe
+[2025-12-09 01:17:50] [INFO] cupos disponibles5
+[2025-12-09 01:18:01] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:18:01] [WARNING] Login fallido (Credenciales incorrectas): pixi
+[2025-12-09 01:18:13] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:18:13] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 01:18:28] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 01:18:28] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 01:18:48] [INFO] Usuario desconectadopepe
+[2025-12-09 01:18:48] [INFO] cupos disponibles4
+[2025-12-09 01:19:28] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:19:28] [INFO] Usuario pixi se ha reconectado.
+[2025-12-09 01:19:42] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 01:19:42] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 01:23:26] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:23:26] [INFO] Usuario pixi se ha reconectado.
+[2025-12-09 01:23:40] [INFO] Usuario desconectadopixi
+[2025-12-09 01:23:40] [INFO] cupos disponibles4
+[2025-12-09 01:23:53] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 01:23:54] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 01:24:41] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:24:41] [INFO] Base de datos cargada. Usuarios registrados: 10
+[2025-12-09 01:24:41] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 01:24:57] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 01:24:57] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 01:25:07] [INFO] Usuario desconectadopepe
+[2025-12-09 01:25:07] [INFO] cupos disponibles4
+[2025-12-09 01:25:25] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:25:25] [INFO] Usuario pixi se ha reconectado.
+[2025-12-09 01:25:44] [INFO] Usuario desconectadopixi
+[2025-12-09 01:25:44] [INFO] cupos disponibles5
+[2025-12-09 01:28:29] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 01:28:29] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 01:28:47] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:28:47] [INFO] Base de datos cargada. Usuarios registrados: 10
+[2025-12-09 01:28:47] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 01:29:04] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 01:29:04] [WARNING] Login fallido (Credenciales incorrectas): pepe
+[2025-12-09 01:29:08] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 01:29:08] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 01:29:20] [INFO] Usuario desconectadopepe
+[2025-12-09 01:29:20] [INFO] cupos disponibles4
+[2025-12-09 01:29:31] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 01:29:31] [WARNING] Login fallido (Credenciales incorrectas): pepe
+[2025-12-09 01:29:35] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 01:29:35] [WARNING] Login fallido (Credenciales incorrectas): pepe
+[2025-12-09 01:29:42] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 01:29:42] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 01:29:52] [INFO] Usuario desconectadopepe
+[2025-12-09 01:29:52] [INFO] cupos disponibles4
+[2025-12-09 01:29:55] [INFO] Usuario desconectadopixi
+[2025-12-09 01:29:55] [INFO] cupos disponibles5
+[2025-12-09 01:37:52] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 01:37:52] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 01:40:17] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 01:40:17] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 01:40:34] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:40:34] [INFO] Base de datos cargada. Usuarios registrados: 10
+[2025-12-09 01:40:34] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 01:40:50] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:40:50] [WARNING] Login rechazado: pixi ya tiene una sesión activa.
+[2025-12-09 01:40:57] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:40:57] [WARNING] Login rechazado: pixi ya tiene una sesión activa.
+[2025-12-09 01:40:58] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:40:58] [WARNING] Login rechazado: pixi ya tiene una sesión activa.
+[2025-12-09 01:40:59] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:40:59] [WARNING] Login rechazado: pixi ya tiene una sesión activa.
+[2025-12-09 01:41:01] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:41:01] [WARNING] Login rechazado: pixi ya tiene una sesión activa.
+[2025-12-09 01:41:04] [INFO] Usuario desconectadopixi
+[2025-12-09 01:41:04] [INFO] cupos disponibles5

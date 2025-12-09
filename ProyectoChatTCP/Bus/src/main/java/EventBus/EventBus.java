@@ -65,7 +65,7 @@ public class EventBus {
             return;
             
         }else if(tipo.equals("LOGOUT")){
-            procesarRegistro(paquete);
+            procesarLogout(paquete);
             return;
         }
 
@@ -75,8 +75,8 @@ public class EventBus {
     private void procesarLogout(PaqueteDTO paquete){
         String user = (String) paquete.getContenido();
         if(usuariosConectados.remove(user)){
-            Log.registrar("INFO", "Usuario desconectado" + user);
-            Log.registrar("INFO", "cupos disponibles" + (MAX_USUARIOS - usuariosConectados.size()));
+            Logs.Log.registrar("INFO", "Usuario desconectado" + user);
+            Logs.Log.registrar("INFO", "cupos disponibles" + (MAX_USUARIOS - usuariosConectados.size()));
             enviarListaUsuarios();
         }
     }
@@ -128,29 +128,30 @@ public class EventBus {
 
         Log.registrar("INFO", "Solicitud de login recibida para usuario: " + user);
 
-        if (usuariosConectados.size() >= MAX_USUARIOS && !usuariosConectados.contains(user)) {
-            Log.registrar("WARNING", "Login rechazado para " + user + ": Servidor lleno (" + usuariosConectados.size() + "/" + MAX_USUARIOS + ")");
+        if (usuariosConectados.contains(user)) {
+            Log.registrar("WARNING", "Login rechazado: " + user + " ya tiene una sesión activa.");
+            enviarRespuesta(paquete, "ERROR", "El usuario ya está conectado en otra sesión.");
+            return; 
+        }
+
+        if (usuariosConectados.size() >= MAX_USUARIOS) {
+            Log.registrar("WARNING", "Login rechazado para " + user + ": Servidor lleno.");
             enviarRespuesta(paquete, "ERROR", "El servidor está lleno (Máx 5 usuarios).");
             return;
         }
-        // ---------------------------------------
 
         if (RepositorioUsuarios.validar(user, pass)) {
-            // Suscribir al usuario a los eventos de chat
             Servicio s = new Servicio(paquete.getPuertoOrigen(), paquete.getHost());
-
             registrarServicio("MENSAJE", s);
             registrarServicio("LISTA_USUARIOS", s);
             registrarServicio("CHAT_GRUPAL", s);
 
-            if (!usuariosConectados.contains(user)) {
-                usuariosConectados.add(user);
-                Log.registrar("EXITO", "Login correcto. Usuarios en línea: " + usuariosConectados.size());
-            } else {
-                Log.registrar("INFO", "Usuario " + user + " se ha reconectado.");
-            }
+            usuariosConectados.add(user);
+            Log.registrar("EXITO", "Login correcto. Usuarios en línea: " + usuariosConectados.size());
 
             enviarRespuesta(paquete, "LOGIN_OK", user);
+            
+            enviarListaUsuarios();
 
         } else {
             Log.registrar("WARNING", "Login fallido (Credenciales incorrectas): " + user);

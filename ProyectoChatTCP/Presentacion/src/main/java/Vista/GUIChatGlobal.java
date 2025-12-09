@@ -28,7 +28,15 @@ public class GUIChatGlobal extends javax.swing.JFrame implements Observador.INot
         initComponents();
         panelDinamico.setLayout(new BoxLayout(panelDinamico,BoxLayout.Y_AXIS));
         controlador.agregarObservador(this);
-       
+         
+        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                cerrarSesion();
+            }
+        });
+        setLocationRelativeTo(this);
     }
     private void agregarMensajeVisual(String texto) {
         javax.swing.JLabel lbl = new javax.swing.JLabel(texto);
@@ -43,7 +51,19 @@ public class GUIChatGlobal extends javax.swing.JFrame implements Observador.INot
         javax.swing.JScrollBar vertical = jScrollPane1.getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
     }
-
+    private void cerrarSesion(){
+        try{
+            controlador.cerrarSesion();
+            Thread.sleep(100);
+            GUIInicioSesion inicio = new GUIInicioSesion();
+            inicio.setVisible(true);
+            this.dispose();
+    
+        }catch(Exception e){
+            System.out.println("error al cerrar sesion: " + e.getMessage());
+        }
+        
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
