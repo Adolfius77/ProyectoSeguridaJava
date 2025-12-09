@@ -6,9 +6,14 @@ package Vista;
 
 import Controlador.Controlador;
 import ObjetoPresentacion.UsuarioOP;
+import java.awt.BorderLayout;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -37,6 +42,26 @@ public class formUsuarios extends javax.swing.JPanel {
 
     private void cargarDatos() {
         lblNombre.setText(nombreUsuario);
+        try{
+            int tamanoImagen = 70;
+            byte[] imagenBytes = generarFotoPerfil.generarFotoPerfilIniciales(nombreUsuario, tamanoImagen);
+            if(imagenBytes != null && imagenBytes.length > 0){
+                ByteArrayInputStream b = new ByteArrayInputStream(imagenBytes);
+                BufferedImage buffer = ImageIO.read(b);
+                ImageIcon icon = new ImageIcon(buffer);
+                
+                fotoPerfil.removeAll();
+                fotoPerfil.setLayout(new BorderLayout());
+                fotoP.setHorizontalAlignment(fotoP.CENTER);
+                fotoP.setVerticalAlignment(fotoP.CENTER);
+                    
+                fotoPerfil.revalidate();
+                
+                fotoPerfil.repaint();
+            }
+        }catch(IOException e){
+            System.err.println("Error al generar la foto de perfil" + e.getMessage());
+        }
     }
 
     private void abrirChat() {
@@ -66,6 +91,7 @@ public class formUsuarios extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         fotoPerfil = new javax.swing.JPanel();
+        fotoP = new javax.swing.JLabel();
         lblNombre = new javax.swing.JLabel();
         btnMensaje = new javax.swing.JButton();
 
@@ -84,11 +110,11 @@ public class formUsuarios extends javax.swing.JPanel {
         fotoPerfil.setLayout(fotoPerfilLayout);
         fotoPerfilLayout.setHorizontalGroup(
             fotoPerfilLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 70, Short.MAX_VALUE)
+            .addComponent(fotoP, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
         );
         fotoPerfilLayout.setVerticalGroup(
             fotoPerfilLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 80, Short.MAX_VALUE)
+            .addComponent(fotoP, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
         );
 
         lblNombre.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -113,7 +139,7 @@ public class formUsuarios extends javax.swing.JPanel {
                 .addComponent(fotoPerfil, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lblNombre)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 141, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 140, Short.MAX_VALUE)
                 .addComponent(btnMensaje)
                 .addGap(19, 19, 19))
         );
@@ -151,17 +177,13 @@ public class formUsuarios extends javax.swing.JPanel {
     }//GEN-LAST:event_btnMensajeActionPerformed
 
     private void fotoPerfilComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_fotoPerfilComponentAdded
-        try {
-            // TODO add your handling code here:
-            generarFotoPerfil.generarFotoPerfilIniciales(nombreUsuario, 12);
-        } catch (IOException ex) {
-            Logger.getLogger(formUsuarios.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        
     }//GEN-LAST:event_fotoPerfilComponentAdded
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMensaje;
+    private javax.swing.JLabel fotoP;
     private javax.swing.JPanel fotoPerfil;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
