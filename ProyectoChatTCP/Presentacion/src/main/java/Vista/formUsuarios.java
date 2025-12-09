@@ -6,6 +6,9 @@ package Vista;
 
 import Controlador.Controlador;
 import ObjetoPresentacion.UsuarioOP;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -70,6 +73,12 @@ public class formUsuarios extends javax.swing.JPanel {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        fotoPerfil.addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentAdded(java.awt.event.ContainerEvent evt) {
+                fotoPerfilComponentAdded(evt);
+            }
+        });
 
         javax.swing.GroupLayout fotoPerfilLayout = new javax.swing.GroupLayout(fotoPerfil);
         fotoPerfil.setLayout(fotoPerfilLayout);
@@ -140,6 +149,15 @@ public class formUsuarios extends javax.swing.JPanel {
     private void btnMensajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMensajeActionPerformed
         abrirChat();
     }//GEN-LAST:event_btnMensajeActionPerformed
+
+    private void fotoPerfilComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_fotoPerfilComponentAdded
+        try {
+            // TODO add your handling code here:
+            generarFotoPerfil.generarFotoPerfilIniciales(nombreUsuario, 12);
+        } catch (IOException ex) {
+            Logger.getLogger(formUsuarios.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_fotoPerfilComponentAdded
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -85,6 +85,9 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JPanel" name="fotoPerfil">
+          <Events>
+            <EventHandler event="componentAdded" listener="java.awt.event.ContainerListener" parameters="java.awt.event.ContainerEvent" handler="fotoPerfilComponentAdded"/>
+          </Events>
 
           <Layout>
             <DimensionLayout dim="0">
