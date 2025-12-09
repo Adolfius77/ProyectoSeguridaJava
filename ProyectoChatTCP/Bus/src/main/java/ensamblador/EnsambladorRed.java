@@ -44,6 +44,7 @@ public class EnsambladorRed {
 
         // Emisor (Enviar al Bus)
         ColaEnvios colaEnvios = new ColaEnvios();
+        System.out.println("intentando conectar a la ip");
         clienteTCP = new ClienteTCP(colaEnvios, 5555, "localhost");
         clienteTCP.setCifradoHabilitado(true);
         colaEnvios.agregarObservador(clienteTCP);
