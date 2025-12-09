@@ -27,6 +27,7 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
     public GUIPRINCIPAL(String usurioLogueado) {
         this.usurioLogueado = usurioLogueado;
         initComponents();
+        
         this.modelo = new Modelo();
         this.modelo.agregarObservador(this);
         this.controlador = new Controlador(modelo);
@@ -44,9 +45,14 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
     private void configurarVentana(){
         this.setTitle("sistema de chat seguro");
         this.setLocationRelativeTo(null);
-        lblNumeroDeUsuarios.setText(String.valueOf(totalUsuaios));
         panelDinamico.setLayout(new BoxLayout(panelDinamico,BoxLayout.Y_AXIS));
-        
+        this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                cerrarSesion();
+            }
+        });
          
     }
     public void actualizarListaUsuarios(List<String> nombres) {
@@ -90,7 +96,7 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
         jLabel1 = new javax.swing.JLabel();
         btnChatGlobal = new javax.swing.JButton();
         lblNumeroDeUsuarios = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnCerrarSesion = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         panelDinamico = new javax.swing.JPanel();
 
@@ -118,7 +124,12 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
         lblNumeroDeUsuarios.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblNumeroDeUsuarios.setText("jLabel2");
 
-        jButton1.setText("Cerrar sesion");
+        btnCerrarSesion.setText("Cerrar sesion");
+        btnCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarSesionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -135,7 +146,7 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblNumeroDeUsuarios)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addComponent(btnCerrarSesion)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -145,7 +156,7 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(lblNumeroDeUsuarios)
-                    .addComponent(jButton1))
+                    .addComponent(btnCerrarSesion))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnChatGlobal)
                 .addContainerGap(26, Short.MAX_VALUE))
@@ -204,7 +215,23 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
         chatglobal.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnChatGlobalActionPerformed
-
+    private void cerrarSesion(){
+        try{
+            controlador.cerrarSesion();
+            GUIInicioSesion inicio = new GUIInicioSesion();
+            inicio.setVisible(true);
+            this.dispose();
+        }catch(Exception e){
+            System.out.println("error al cerrar sesion" + e.getMessage());
+        }finally{
+            System.exit(0);
+        }
+        
+    }
+    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
+        cerrarSesion();
+    }//GEN-LAST:event_btnCerrarSesionActionPerformed
+    
     /**
      * @param args the command line arguments
      */
@@ -241,8 +268,8 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnChatGlobal;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -259,6 +286,7 @@ public class GUIPRINCIPAL extends javax.swing.JFrame implements INotificadorNuev
         if (evento.equals("LISTA_USUARIOS")) {
             List<String> lista = procesarLista(contenido);
             actualizarListaUsuarios(lista);
+             lblNumeroDeUsuarios.setText(String.valueOf(lista.size()));
         }
         else if (evento.equals("MENSAJE")) {
              System.out.println("Nuevo mensaje de: " + contenido); // (Depende de cómo mandes el origen)

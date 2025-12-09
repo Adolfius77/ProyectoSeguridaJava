@@ -25,3 +25,22 @@
 [2025-12-09 00:45:37] [INFO] Solicitud de login recibida para usuario: pixi
 [2025-12-09 00:45:37] [INFO] Base de datos cargada. Usuarios registrados: 10
 [2025-12-09 00:45:37] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 00:55:18] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 00:55:18] [INFO] Usuario pixi se ha reconectado.
+[2025-12-09 00:56:00] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 00:56:00] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 00:59:39] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 00:59:39] [INFO] Usuario pixi se ha reconectado.
+[2025-12-09 01:00:15] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:00:15] [INFO] Usuario pixi se ha reconectado.
+[2025-12-09 01:07:01] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 01:07:02] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 01:07:23] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:07:23] [INFO] Base de datos cargada. Usuarios registrados: 10
+[2025-12-09 01:07:23] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 01:07:58] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 01:07:58] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 01:08:08] [ERROR] Error al procesar evento 'LOGOUT': class java.lang.String cannot be cast to class com.google.gson.internal.LinkedTreeMap (java.lang.String is in module java.base of loader 'bootstrap'; com.google.gson.internal.LinkedTreeMap is in unnamed module of loader 'app')
+[2025-12-09 01:08:30] [ERROR] Error al procesar evento 'LOGOUT': class java.lang.String cannot be cast to class com.google.gson.internal.LinkedTreeMap (java.lang.String is in module java.base of loader 'bootstrap'; com.google.gson.internal.LinkedTreeMap is in unnamed module of loader 'app')
+[2025-12-09 01:08:47] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:08:47] [INFO] Usuario pixi se ha reconectado.
