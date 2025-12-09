@@ -129,14 +129,14 @@ public class EventBus {
         Log.registrar("INFO", "Solicitud de login recibida para usuario: " + user);
 
         if (usuariosConectados.contains(user)) {
-            Log.registrar("WARNING", "Login rechazado: " + user + " ya tiene una sesión activa.");
-            enviarRespuesta(paquete, "ERROR", "El usuario ya está conectado en otra sesión.");
+            Log.registrar("WARNING", "Login rechazado: " + user + " ya tiene una sesion activa.");
+            enviarRespuesta(paquete, "ERROR", "El usuario ya esta conectado en otra sesion.");
             return; 
         }
 
         if (usuariosConectados.size() >= MAX_USUARIOS) {
             Log.registrar("WARNING", "Login rechazado para " + user + ": Servidor lleno.");
-            enviarRespuesta(paquete, "ERROR", "El servidor está lleno (Máx 5 usuarios).");
+            enviarRespuesta(paquete, "ERROR", "El servidor esta lleno (Max 5 usuarios).");
             return;
         }
 

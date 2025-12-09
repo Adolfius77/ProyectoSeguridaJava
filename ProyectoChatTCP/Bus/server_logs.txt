@@ -124,3 +124,55 @@
 [2025-12-09 01:41:01] [WARNING] Login rechazado: pixi ya tiene una sesión activa.
 [2025-12-09 01:41:04] [INFO] Usuario desconectadopixi
 [2025-12-09 01:41:04] [INFO] cupos disponibles5
+[2025-12-09 01:54:28] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 01:54:28] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 01:55:01] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 01:55:01] [INFO] Base de datos cargada. Usuarios registrados: 10
+[2025-12-09 01:55:01] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 01:55:17] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 01:55:17] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 02:00:09] [INFO] Usuario desconectadopepe
+[2025-12-09 02:00:09] [INFO] cupos disponibles4
+[2025-12-09 02:00:12] [INFO] Usuario desconectadopixi
+[2025-12-09 02:00:12] [INFO] cupos disponibles5
+[2025-12-09 02:17:33] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 02:17:33] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 02:17:49] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 02:17:49] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 02:19:34] [INFO] Usuario desconectadopepe
+[2025-12-09 02:19:34] [INFO] cupos disponibles4
+[2025-12-09 02:24:39] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-09 02:24:40] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-09 02:24:59] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-09 02:24:59] [INFO] Base de datos cargada. Usuarios registrados: 10
+[2025-12-09 02:24:59] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-09 02:25:15] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-09 02:25:15] [EXITO] Login correcto. Usuarios en línea: 2
+[2025-12-09 02:26:17] [INFO] Solicitud de registro recibida para usuario: dana
+[2025-12-09 02:26:17] [EXITO] Usuario registrado correctamente: dana
+[2025-12-09 02:26:28] [INFO] Solicitud de login recibida para usuario: dana
+[2025-12-09 02:26:28] [EXITO] Login correcto. Usuarios en línea: 3
+[2025-12-09 02:27:42] [INFO] Solicitud de registro recibida para usuario: luis
+[2025-12-09 02:27:42] [EXITO] Usuario registrado correctamente: luis
+[2025-12-09 02:27:47] [INFO] Solicitud de login recibida para usuario: luis
+[2025-12-09 02:27:47] [EXITO] Login correcto. Usuarios en línea: 4
+[2025-12-09 02:28:55] [INFO] Solicitud de registro recibida para usuario: claudia
+[2025-12-09 02:28:55] [EXITO] Usuario registrado correctamente: claudia
+[2025-12-09 02:29:02] [INFO] Solicitud de login recibida para usuario: claudia
+[2025-12-09 02:29:02] [EXITO] Login correcto. Usuarios en línea: 5
+[2025-12-09 02:29:47] [INFO] Solicitud de registro recibida para usuario: hector
+[2025-12-09 02:29:47] [EXITO] Usuario registrado correctamente: hector
+[2025-12-09 02:30:00] [INFO] Solicitud de login recibida para usuario: hector
+[2025-12-09 02:30:00] [WARNING] Login rechazado para hector: Servidor lleno.
+[2025-12-09 02:30:10] [INFO] Solicitud de login recibida para usuario: hector
+[2025-12-09 02:30:10] [WARNING] Login rechazado para hector: Servidor lleno.
+[2025-12-09 02:30:28] [INFO] Usuario desconectadopepe
+[2025-12-09 02:30:28] [INFO] cupos disponibles1
+[2025-12-09 02:30:29] [INFO] Usuario desconectadoluis
+[2025-12-09 02:30:29] [INFO] cupos disponibles2
+[2025-12-09 02:30:33] [INFO] Usuario desconectadopixi
+[2025-12-09 02:30:33] [INFO] cupos disponibles3
+[2025-12-09 02:30:35] [INFO] Usuario desconectadodana
+[2025-12-09 02:30:35] [INFO] cupos disponibles4
+[2025-12-09 02:30:38] [INFO] Usuario desconectadoclaudia
+[2025-12-09 02:30:38] [INFO] cupos disponibles5

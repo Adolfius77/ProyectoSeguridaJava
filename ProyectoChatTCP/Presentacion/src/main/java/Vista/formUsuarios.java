@@ -52,11 +52,14 @@ public class formUsuarios extends javax.swing.JPanel {
                 
                 fotoPerfil.removeAll();
                 fotoPerfil.setLayout(new BorderLayout());
+                
+                fotoP.setIcon(icon);
                 fotoP.setHorizontalAlignment(fotoP.CENTER);
                 fotoP.setVerticalAlignment(fotoP.CENTER);
+                
+                fotoPerfil.add(fotoP,BorderLayout.CENTER);
                     
                 fotoPerfil.revalidate();
-                
                 fotoPerfil.repaint();
             }
         }catch(IOException e){
