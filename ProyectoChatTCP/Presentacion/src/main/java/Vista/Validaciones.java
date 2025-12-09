@@ -40,9 +40,7 @@ public class Validaciones {
         );
     }
 
-    // -------------------------------------------------------------
     // VALIDACIONES
-    // -------------------------------------------------------------
     public static boolean esTextoVacio(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
             mostrarError("El campo no puede estar vacío.");
@@ -77,6 +75,11 @@ public class Validaciones {
             mostrarError("El nombre debe tener entre 3 y 20 caracteres.");
             return false;
         }
+        if(!n.matches("^[a-zA-Z0-9]+$")){
+            mostrarError("el usuario solo puede contener letras y numeros(sin espacios ni simbolos inge)");
+            return false;
+        }
+        
         return true;
     }
 

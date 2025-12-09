@@ -13,3 +13,10 @@
 [2025-12-06 19:53:49] [EXITO] Usuario registrado correctamente: toñito
 [2025-12-06 19:53:58] [INFO] Solicitud de login recibida para usuario: toñito
 [2025-12-06 19:53:58] [EXITO] Login correcto. Usuarios en línea: 3
+[2025-12-06 20:34:37] [INFO] EventBus iniciado. Limite de usuarios configurado: 5
+[2025-12-06 20:34:38] [INFO] Servicio EventBus iniciado correctamente en puerto 5555
+[2025-12-06 20:35:03] [INFO] Solicitud de login recibida para usuario: pixi
+[2025-12-06 20:35:03] [INFO] Base de datos cargada. Usuarios registrados: 10
+[2025-12-06 20:35:03] [EXITO] Login correcto. Usuarios en línea: 1
+[2025-12-06 20:36:38] [INFO] Solicitud de login recibida para usuario: pepe
+[2025-12-06 20:36:38] [EXITO] Login correcto. Usuarios en línea: 2
